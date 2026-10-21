@@ -145,7 +145,7 @@ class FakeLLM:
             for v in payload["voices"]:
                 vid = v["videos"][0]
                 word = (re.findall(r"[A-Za-z]{5,}", vid["title"]) or ["Focus"])[0].title()
-                cards.append({"voice": v["name"], "principle": f"Lead with {word.lower()} before detail.",
+                cards.append({"voice": v["name"], "channel_id": v.get("channel_id", ""), "principle": f"Lead with {word.lower()} before detail.",
                               "why": "People decide on the first clear signal.",
                               "use_when": "Opening a conversation.", "avoid_when": "Someone is upset.",
                               "mantra": f"{word} first, detail second", "scenarios": payload["scenarios"][:2],

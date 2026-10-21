@@ -97,7 +97,7 @@ pip install -r requirements-dev.txt
 python -m pytest -q
 ```
 
-The suite has 96 tests. They pass on SQLite, and on real Postgres 16 with the browser test excluded (`TEST_DATABASE_URL=postgres://... python -m pytest`):
+The suite has 103 tests. They pass on SQLite, and on real Postgres 16 with the browser test excluded (`TEST_DATABASE_URL=postgres://... python -m pytest`):
 
 - Unit tests: scoring maths, guards and parsing.
 - Whole-pipeline runs: success, no topics, quota exhausted, budget cap and reservations, copied wording (cited or not), editor blocks, malformed model output, restart recovery, stale runs, lock release.

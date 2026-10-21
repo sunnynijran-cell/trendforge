@@ -50,14 +50,20 @@ def server():
 @pytest.fixture
 def page(server):
     with pw.sync_playwright() as p:
+        quiet = ["--disable-background-networking", "--disable-component-update", "--disable-sync",
+                 "--no-first-run", "--disable-default-apps", "--disable-features=AutofillServerCommunication"]
         try:
-            browser = p.chromium.launch()
+            browser = p.chromium.launch(args=quiet)
         except Exception:  # bundled browser missing: use a system Chromium (CHROMIUM_PATH)
-            browser = p.chromium.launch(executable_path=os.getenv("CHROMIUM_PATH", "/opt/pw-browsers/chromium"))
+            browser = p.chromium.launch(args=quiet,
+                                        executable_path=os.getenv("CHROMIUM_PATH", "/opt/pw-browsers/chromium"))
         ctx = browser.new_context(viewport={"width": 1280, "height": 900})
         # Google Fonts is blocked in the build sandbox; stub it so only app errors count.
         ctx.route("https://fonts.googleapis.com/**", lambda r: r.fulfill(status=200, body="", content_type="text/css"))
         ctx.route("https://fonts.gstatic.com/**", lambda r: r.fulfill(status=200, body=""))
+        # Only the app under test may be reached; anything else is answered locally.
+        ctx.route(lambda url: not url.startswith("http://127.0.0.1") and "fonts.g" not in url,
+                  lambda r: r.fulfill(status=204, body=""))
         pg = ctx.new_page()
         errors = []
         pg.on("pageerror", lambda e: errors.append(str(e)))

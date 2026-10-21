@@ -40,10 +40,11 @@ MAX_GAP_SUBJECTS = 5
 MAX_COMMENTS = 5
 LINK_COOLDOWN = timedelta(days=30)
 # Anything that reads as a link: http(s)://, www., or a bare domain like bit.ly/x or amazon.co.uk
+_TLD = r"(?:com|co\.uk|org\.uk|uk|ly|io|net|org|me|app|link|gl|co|ai|info|biz|shop|store|xyz|page|site|in|au|de|tv)"
 URL_RE = re.compile(
-    r"(?:https?://|www\.)\S+"
-    r"|\b[a-z0-9-]+(?:\.[a-z0-9-]+)*\.(?:com|co\.uk|org\.uk|uk|ly|io|net|org|me|app|link|gl|co|ai|info|biz"
-    r"|shop|store|xyz|page|site|in|au|de|tv)\b(?:/\S*)?", re.I)
+    r"(?i:(?:https?://|www\.)\S+)"                                     # any case
+    r"|\b[a-z0-9-]+(?:\.[a-z0-9-]+)*\." + _TLD + r"\b(?:/\S*)?"          # bare lowercase domain: bit.ly/x
+    r"|(?i:\b[a-z0-9-]+(?:\.[a-z0-9-]+)*\." + _TLD + r"/\S+)")          # any case WITH a path: Amazon.com/dp/1
 
 
 def find_links(text: str) -> list[str]:
@@ -142,8 +143,9 @@ def run_distil(ctx: Ctx) -> int:
     by_channel: dict[str, list[Video]] = {}
     for v in vids:
         by_channel.setdefault(v.channel_id or "", []).append(v)
-    by_name = {vo.title: vo.channel_id for vo in voices}
-    payload_voices = [{"name": vo.title, "focus": vo.focus, "tier": vo.tier,
+    by_name = {vo.title.strip().lower(): vo.channel_id for vo in voices}
+    by_id = {vo.channel_id for vo in voices}
+    payload_voices = [{"channel_id": vo.channel_id, "name": vo.title, "focus": vo.focus, "tier": vo.tier,
                        "videos": [{"yt_id": v.yt_id, "title": v.title, "summary": v.description[:400]}
                                   for v in sorted(by_channel.get(vo.channel_id, []), key=lambda v: -v.views)[:4]]}
                       for vo in voices if by_channel.get(vo.channel_id)]
@@ -159,7 +161,8 @@ def run_distil(ctx: Ctx) -> int:
         "known to teach, but tie each card to one of the listed videos. Every card must say when NOT to use it.",
         "Make 1-3 cards per voice. mantra: 8 words or fewer, sayable in the moment. scenarios: pick from the "
         'scenarios list. Return {"cards":[{"voice":str,"principle":str,"why":str,"use_when":str,'
-        '"avoid_when":str,"mantra":str,"scenarios":[str],"source_yt_id":str}]}.\nDATA:' + json.dumps(data),
+        '"avoid_when":str,"mantra":str,"scenarios":[str],"source_yt_id":str,"channel_id":str}]}. '
+        "Copy channel_id exactly from the voice the card came from.\nDATA:" + json.dumps(data),
         ctx.run.id)
     valid_ids = {v.yt_id for v in vids}
     descriptions = [f"{v.title}\n{v.description}" for v in vids]
@@ -177,7 +180,8 @@ def run_distil(ctx: Ctx) -> int:
         if any(mine & guards.shingles(d) for d in descriptions):
             dropped += 1          # lifted 8+ words from a video description
             continue
-        cid = by_name.get(str(c.get("voice", "")))
+        cid = str(c.get("channel_id", "")) if str(c.get("channel_id", "")) in by_id \
+            else by_name.get(str(c.get("voice", "")).strip().lower())
         if not cid:               # card not tied to a usable voice we sent
             dropped += 1
             continue
@@ -334,7 +338,7 @@ def run_comments(ctx: Ctx) -> int:
                                 video_title=v.title, channel_id=v.channel_id or "",
                                 channel_title=v.channel_title, is_short=is_short, body=body,
                                 book_id=book.id if book else None, has_link=include_link))
-        ctx.db.flush()
+        ctx.db.commit()          # keep each draft even if a later one fails
         made += 1
         links += include_link
     ctx.log("comments", f"{made} comment draft(s) for you to post by hand, {links} with a book link.")

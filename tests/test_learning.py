@@ -272,12 +272,14 @@ def test_migration_refuses_missing_not_null_column(tmp_path):
 
 # ---------- review findings ----------
 @pytest.mark.parametrize("text", ["see https://x.com/a", "www.amazon.co.uk/dp/1", "bit.ly/abc", "amazon.com",
-                                  "go to example.co.uk/book now"])
+                                  "go to example.co.uk/book now", "WWW.MYBOOK.COM", "Amazon.com/dp/123",
+                                  "HTTPS://X.COM"])
 def test_find_links_catches_every_form(text):
     assert learning.find_links(text)
 
 
-@pytest.mark.parametrize("text", ["e.g. this works", "Decision latency costs 3.5 weeks", "P6 v24.1"])
+@pytest.mark.parametrize("text", ["e.g. this works", "Decision latency costs 3.5 weeks", "P6 v24.1",
+                                  "Built on ASP.NET and .NET", "Use VB.NET"])
 def test_find_links_ignores_plain_text(text):
     assert learning.find_links(text) == []
 
@@ -374,3 +376,33 @@ def test_optional_stage_failure_does_not_fail_the_run(db, learner):
             return super().json(db, task, system, prompt, run_id)
     run, _ = _run(db, learner, llm=GapsDown(settings))
     assert run.status == "done", run.error
+
+
+def test_paraphrased_voice_name_still_matches_by_channel_id(db, learner):
+    class Paraphrase(FakeLLM):
+        def json(self, db, task, system, prompt, run_id):
+            out = super().json(db, task, system, prompt, run_id)
+            if task == "distil":
+                for c in out["cards"]:
+                    c["voice"] = c["voice"].upper() + " (channel)"
+            return out
+    run, _ = _run(db, learner, llm=Paraphrase(settings))
+    assert run.status == "done", run.error
+    with SessionLocal() as s:
+        assert all(c.channel_id for c in s.scalars(select(LensCard)))
+
+
+def test_late_comment_failure_keeps_earlier_drafts(db, learner):
+    class Fails3rd(FakeLLM):
+        n = 0
+        def json(self, db, task, system, prompt, run_id):
+            if task == "comment":
+                Fails3rd.n += 1
+                if Fails3rd.n == 3:
+                    from app.ledger import BudgetExceeded
+                    raise BudgetExceeded("cap")
+            return super().json(db, task, system, prompt, run_id)
+    run, _ = _run(db, learner, llm=Fails3rd(settings))
+    assert run.status == "done"
+    with SessionLocal() as s:
+        assert len(s.scalars(select(CommentDraft)).all()) == 2
