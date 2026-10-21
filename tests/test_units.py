@@ -102,9 +102,11 @@ def test_relevance_filter_drops_off_topic():
     from app.agents.scout import is_relevant
     p6 = NS(title="Cost loading in Primavera P6", tags=[], description="")
     board = NS(title="HDHMR board for interior work", tags=["interior"], description="Tips")
-    in_desc = NS(title="Planning tutorial", tags=[], description="Uses P6 throughout")
-    assert is_relevant("primavera p6", p6) and is_relevant("primavera p6", in_desc)
+    stuffed = NS(title="HDHMR board for interior work", tags=["primavera", "p6"], description="#p6 #primavera")
+    arabic = NS(title="كورس التخطيط والبريمافيرا P6", tags=[], description="")
+    assert is_relevant("primavera p6", p6) and is_relevant("primavera p6", arabic)
     assert not is_relevant("primavera p6", board)
+    assert not is_relevant("primavera p6", stuffed)   # tag stuffing does not count
     assert is_relevant("", board)
 
 

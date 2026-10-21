@@ -14,12 +14,13 @@ STOP = {"the", "and", "for", "with", "how", "what", "your", "you", "from", "into
 
 
 def is_relevant(query: str, v) -> bool:
-    """YouTube search pads results with loosely related videos. Keep a video only
-    if at least one meaningful search word appears in its title, tags or description."""
+    """YouTube search pads results with loosely related videos, and some uploaders
+    stuff popular words into tags and descriptions. Keep a video only if at least
+    one meaningful search word appears in its TITLE."""
     words = [w for w in re.findall(r"[a-z0-9]+", query.lower()) if len(w) > 1 and w not in STOP]
     if not words:
         return True
-    hay = " ".join([v.title, " ".join(v.tags), v.description]).lower()
+    hay = v.title.lower()
     return any(re.search(rf"\b{re.escape(w)}\b", hay) for w in words)
 
 

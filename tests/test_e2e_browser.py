@@ -93,8 +93,8 @@ def test_user_journey(server, page):
     pg.wait_for_selector("#quote >> text=201 YouTube units")
     pg.click("[data-testid=run-btn]")
     pg.wait_for_selector("[data-testid=run-status] >> text=awaiting approval", timeout=20000)
-    assert pg.inner_text("[data-testid=stage-scout] .n") == "16"
-    assert pg.inner_text("[data-testid=stage-analyst] .n") == "10"
+    assert pg.inner_text("[data-testid=stage-scout] .n") == "9"
+    assert pg.inner_text("[data-testid=stage-analyst] .n") == "9"
     assert pg.inner_text("[data-testid=stage-designer] .n") == "3"
     assert pg.inner_text("[data-testid=stage-review] .n") == "3"
     assert pg.inner_text("[data-testid=stage-publisher] .n") == "0"
@@ -103,7 +103,7 @@ def test_user_journey(server, page):
 
     pg.get_by_role("tab", name="Trends").click()
     pg.wait_for_selector("[data-testid=trend-row]")
-    assert pg.locator("[data-testid=trend-row]").count() == 10
+    assert pg.locator("[data-testid=trend-row]").count() == 9
     pg.screenshot(path=EVIDENCE / "3-trends.png", full_page=True)
 
     pg.get_by_role("tab", name="Review queue").click()
