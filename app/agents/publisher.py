@@ -29,11 +29,15 @@ def _slug(s: str) -> str:
 
 
 def available_targets(cfg: Settings = settings) -> list[str]:
+    if not cfg.publishing_enabled:
+        return []
     return ["export"] + (["webhook"] if cfg.webhook_url else [])
 
 
 def publish(db: Session, item: Item, target: str, cfg: Settings = settings,
             http: httpx.Client | None = None) -> Item:
+    if not cfg.publishing_enabled:
+        raise PublishError("Publishing is switched off. Set PUBLISHING_ENABLED=1 in Render to turn it on.")
     if target not in available_targets(cfg):
         raise PublishError(f"Target '{target}' is not configured. Available: {', '.join(available_targets(cfg))}.")
     # Atomic claim: only one request can move approved -> publishing, so two

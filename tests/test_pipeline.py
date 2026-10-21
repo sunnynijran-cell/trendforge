@@ -26,9 +26,9 @@ def test_full_run_reaches_approval_gate(db, project):
         trends = s.scalars(select(Trend).where(Trend.run_id == run.id).order_by(Trend.id)).all()
         briefs = s.scalars(select(Brief).where(Brief.run_id == run.id)).all()
         items = s.scalars(select(Item).where(Item.run_id == run.id)).all()
-        # Search matches 17 unique fixture videos on title + tags, but only 9 carry a
-        # search word in their TITLE. The relevance filter keeps those 9.
-        assert videos == 9
+        # Search matches 17 unique fixture videos on title + tags, but only 11 carry a
+        # search word (or its plural, e.g. 'decisions') in their TITLE. Those 11 are kept.
+        assert videos == 11
         assert len(trends) == min(settings.top_trends, videos)
         assert all(0 <= t.score <= 1 for t in trends)
         scores = [t.score for t in trends]

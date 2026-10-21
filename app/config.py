@@ -80,6 +80,9 @@ class Settings:
     top_trends: int = _i("TOP_TRENDS", 10)
     briefs_per_run: int = _i("BRIEFS_PER_RUN", 3)
 
+    # Master switch. Off unless PUBLISHING_ENABLED=1 is set, so nothing can leave
+    # the app until you turn it on yourself.
+    publishing_enabled: bool = _s("PUBLISHING_ENABLED") == "1"
     # Publishing adapters (all optional). Nothing publishes without approval.
     exports_dir: Path = Path(_s("EXPORTS_DIR", str(ROOT / "exports")))
     webhook_url: str = _s("PUBLISH_WEBHOOK_URL")

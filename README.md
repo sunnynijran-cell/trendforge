@@ -8,6 +8,10 @@ YouTube    maths +      Sonnet       Sonnet +     dashboard        export /
 API        Haiku                     guards                        webhook
 ```
 
+TrendForge has two modes, which you set per project:
+- **Content:** it makes things to publish once you approve them.
+- **Learning:** it's for your own growth. Nothing is ever published. See "Learning mode" below.
+
 ## Top-down view (what each agent does)
 
 | Agent | Job | Engine | Cost |
@@ -27,7 +31,28 @@ API        Haiku                     guards                        webhook
 - **Recent runs**: quota and Claude cost for each run.
 - `app/agents/*.py`: one file per agent. Each one is short and readable.
 
+## Learning mode
+
+```
+Scout ──> Voices ──> Analyst ──> Distil ──> Gaps ──> Comments
+YouTube   who's worth  scoring   lens cards  where you   drafts YOU
+API       learning from          + mantras   could add   post by hand
+```
+
+| Stage | Job | Engine |
+|---|---|---|
+| Voices | Ranks the channels behind the top videos by views. Splits them into established and rising (smaller channels pulling views well above their size). A channel is used only after Haiku has checked it. Heavily political channels are dropped, and a channel flagged once is never un-flagged. | YouTube channels API + Haiku |
+| Distil | Turns the ideas into lens cards: a principle, why it works, when to use it, when not to, and a mantra of 8 words or fewer. Each card is tagged to situations and linked to its source video. Cards that copy wording from a video are dropped. | Sonnet |
+| Gaps | For the subjects under "What I cover", compares demand (views per hour) with supply (strong recent videos). A high score means a big audience with thin coverage, and each gap comes with a suggested angle. | YouTube + Haiku |
+| Comments | Drafts comments on rising videos for you to post by hand. A book link is included only when the video matches the book's themes, it isn't a Short, and that channel hasn't had a link from you in 30 days. Every other draft has no link at all. | Sonnet |
+| What do I do now? | You type a situation and get up to 4 cards, ideally from different voices, plus the tension between them and a first move. Cards you mark as helpful come up more often, including as the daily mantra. | Haiku |
+
+The official API gives titles, descriptions and stats, but not the spoken words in other people's videos. So the cards draw on those details plus what each voice is widely known to teach.
+
 ## Safety and cost controls
+
+- **Publishing is switched off** unless `PUBLISHING_ENABLED=1` is set in Render. Even after approval, nothing can leave the app.
+- **TrendForge never posts comments.** Learning mode only drafts them for you.
 
 - Nothing publishes without your approval. This is enforced in code and tested.
 - Before a run starts, the dashboard shows what it will cost.
@@ -72,7 +97,7 @@ pip install -r requirements-dev.txt
 python -m pytest -q
 ```
 
-The suite has 68 tests. They pass on SQLite, and on real Postgres 16 with the browser test excluded (`TEST_DATABASE_URL=postgres://... python -m pytest`):
+The suite has 96 tests. They pass on SQLite, and on real Postgres 16 with the browser test excluded (`TEST_DATABASE_URL=postgres://... python -m pytest`):
 
 - Unit tests: scoring maths, guards and parsing.
 - Whole-pipeline runs: success, no topics, quota exhausted, budget cap and reservations, copied wording (cited or not), editor blocks, malformed model output, restart recovery, stale runs, lock release.

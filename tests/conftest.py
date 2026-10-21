@@ -8,6 +8,7 @@ os.environ["OFFLINE"] = "1"
 os.environ["DATABASE_URL"] = os.environ.get("TEST_DATABASE_URL") or f"sqlite:///{_TMP / 'test.db'}"
 os.environ["EXPORTS_DIR"] = str(_TMP / "exports")
 os.environ.pop("ADMIN_TOKEN", None)
+os.environ["PUBLISHING_ENABLED"] = "1"   # existing publish tests; the off switch has its own test
 
 import pytest  # noqa: E402
 

@@ -5,6 +5,12 @@ Routing (cheapest model that does the job):
   check    -> fast  (Haiku)  : second-opinion brand / claims check
   design   -> smart (Sonnet) : turn themes into briefs that fit a project
   make     -> smart (Sonnet) : write the actual item
+Learning mode:
+  vet       -> fast  (Haiku)  : is a channel on-topic, is it heavily political
+  distil    -> smart (Sonnet) : ideas into lens cards and mantras
+  angle     -> fast  (Haiku)  : suggest an angle for each content gap
+  comment   -> smart (Sonnet) : draft a comment for you to post by hand
+  situation -> fast  (Haiku)  : pick the right cards for a live situation
 """
 from __future__ import annotations
 
@@ -17,8 +23,10 @@ from sqlalchemy.orm import Session
 from .config import Settings, settings
 from .ledger import charge_llm, llm_cost, llm_reservation
 
-ROUTES = {"cluster": "fast", "check": "fast", "design": "smart", "make": "smart"}
-MAX_TOKENS = {"cluster": 1200, "check": 600, "design": 2500, "make": 3000}
+ROUTES = {"cluster": "fast", "check": "fast", "design": "smart", "make": "smart",
+          "vet": "fast", "distil": "smart", "angle": "fast", "comment": "smart", "situation": "fast"}
+MAX_TOKENS = {"cluster": 1200, "check": 600, "design": 2500, "make": 3000,
+              "vet": 1500, "distil": 4000, "angle": 1200, "comment": 1500, "situation": 800}
 
 
 def model_for(task: str, cfg: Settings = settings) -> str:
@@ -127,6 +135,37 @@ class FakeLLM:
                     f"Format: {b['format']}."}
         if task == "check":
             return {"ok": True, "issues": []}
+        if task == "vet":
+            return {"channels": [{"channel_id": c["channel_id"], "on_topic": True,
+                                  "political": "politic" in (c["title"] + c["description"]).lower(),
+                                  "focus": f"Talks about {', '.join(c['sample_titles'][:1]) or 'the topic'}"}
+                                 for c in payload["channels"]]}
+        if task == "distil":
+            cards = []
+            for v in payload["voices"]:
+                vid = v["videos"][0]
+                word = (re.findall(r"[A-Za-z]{5,}", vid["title"]) or ["Focus"])[0].title()
+                cards.append({"voice": v["name"], "principle": f"Lead with {word.lower()} before detail.",
+                              "why": "People decide on the first clear signal.",
+                              "use_when": "Opening a conversation.", "avoid_when": "Someone is upset.",
+                              "mantra": f"{word} first, detail second", "scenarios": payload["scenarios"][:2],
+                              "source_yt_id": vid["yt_id"]})
+            return {"cards": cards}
+        if task == "angle":
+            return {"angles": [{"subject": g["subject"], "angle": f"A practical guide to {g['subject']}",
+                                "format": "youtube_script"} for g in payload["gaps"]]}
+        if task == "comment":
+            c = payload["video"]
+            body = f"Useful point on {c['title'][:40]}. The part people miss is acting on it early."
+            if payload.get("include_link"):
+                body += f" I go deeper on this in {payload['book']['title']}: {payload['book']['url']}"
+            return {"body": body}
+        if task == "situation":
+            words = set(re.findall(r"[a-z]{4,}", payload["situation"].lower()))
+            ranked = sorted(payload["cards"], key=lambda c: -len(words & set(re.findall(
+                r"[a-z]{4,}", (c["principle"] + " " + " ".join(c["scenarios"]) + " " + c["use_when"]).lower()))))
+            return {"card_ids": [c["id"] for c in ranked[:4]], "tension": "Speed versus patience.",
+                    "first_move": "Pause, then name what they actually want."}
         raise ValueError(task)
 
 

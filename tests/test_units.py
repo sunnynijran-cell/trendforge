@@ -108,6 +108,8 @@ def test_relevance_filter_drops_off_topic():
     assert not is_relevant("primavera p6", board)
     assert not is_relevant("primavera p6", stuffed)   # tag stuffing does not count
     assert is_relevant("", board)
+    assert is_relevant("decision making", NS(title="Why big decisions take too long", tags=[], description=""))
+    assert not is_relevant("p6", NS(title="P60 tax form explained", tags=[], description=""))
 
 
 def test_fake_model_books_no_spend_on_a_keyless_deploy(db):

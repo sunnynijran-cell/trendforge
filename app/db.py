@@ -34,6 +34,10 @@ class Project(Base):
     brand_rules: Mapped[str] = mapped_column(Text, default="")
     output_types: Mapped[list] = mapped_column(JSON, default=lambda: ["linkedin_post"])
     banned_terms: Mapped[list] = mapped_column(JSON, default=list)
+    # "content": make things to publish. "learning": voices, lens cards, gaps, comment drafts.
+    mode: Mapped[str | None] = mapped_column(String(20), default="content", nullable=True)
+    # Learning mode: the subjects YOU cover (Meridian One, decision latency, ...) for the gap finder.
+    coverage: Mapped[list | None] = mapped_column(JSON, default=list, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     topics: Mapped[list["Topic"]] = relationship(back_populates="project", cascade="all, delete-orphan")
 
@@ -72,6 +76,7 @@ class Video(Base):
     yt_id: Mapped[str] = mapped_column(String(20))
     title: Mapped[str] = mapped_column(Text)
     channel_title: Mapped[str] = mapped_column(String(200), default="")
+    channel_id: Mapped[str | None] = mapped_column(String(40), default="", nullable=True)
     description: Mapped[str] = mapped_column(Text, default="")
     tags: Mapped[list] = mapped_column(JSON, default=list)
     published_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
@@ -150,6 +155,88 @@ class Usage(Base):
     run_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
 
+class Voice(Base):
+    """A YouTube channel worth learning from, found by the Voice Finder."""
+    __tablename__ = "voices"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    project_id: Mapped[int] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE"), index=True)
+    channel_id: Mapped[str] = mapped_column(String(40))
+    title: Mapped[str] = mapped_column(String(200))
+    subscribers: Mapped[int] = mapped_column(Integer, default=0)
+    total_views: Mapped[int] = mapped_column(Integer, default=0)
+    recent_views: Mapped[int] = mapped_column(Integer, default=0)   # views on videos found this run
+    tier: Mapped[str] = mapped_column(String(20), default="established")  # established | rising
+    political: Mapped[bool] = mapped_column(Boolean, default=False)
+    hidden: Mapped[bool] = mapped_column(Boolean, default=False)       # your "never show me" switch
+    # True only once Haiku has vetted it. Unvetted voices are never used (fail closed).
+    vetted: Mapped[bool | None] = mapped_column(Boolean, default=False, nullable=True)
+    focus: Mapped[str] = mapped_column(Text, default="")                # what this voice is about
+    last_seen: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class LensCard(Base):
+    """One idea distilled into something you can use in the moment."""
+    __tablename__ = "lens_cards"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    project_id: Mapped[int] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE"), index=True)
+    run_id: Mapped[int | None] = mapped_column(ForeignKey("runs.id", ondelete="SET NULL"), nullable=True)
+    voice: Mapped[str] = mapped_column(String(200), default="")
+    channel_id: Mapped[str | None] = mapped_column(String(40), default="", nullable=True)
+    principle: Mapped[str] = mapped_column(Text)
+    why: Mapped[str] = mapped_column(Text, default="")
+    use_when: Mapped[str] = mapped_column(Text, default="")
+    avoid_when: Mapped[str] = mapped_column(Text, default="")
+    mantra: Mapped[str] = mapped_column(String(120))
+    scenarios: Mapped[list] = mapped_column(JSON, default=list)
+    source_url: Mapped[str] = mapped_column(String(300), default="")
+    uses: Mapped[int] = mapped_column(Integer, default=0)
+    helped: Mapped[int] = mapped_column(Integer, default=0)
+    archived: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class Gap(Base):
+    """A subject people watch a lot but few good recent videos cover."""
+    __tablename__ = "gaps"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    project_id: Mapped[int] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE"), index=True)
+    run_id: Mapped[int | None] = mapped_column(ForeignKey("runs.id", ondelete="SET NULL"), nullable=True)
+    subject: Mapped[str] = mapped_column(String(200))
+    demand: Mapped[float] = mapped_column(Float, default=0)    # views/hour across the top results
+    supply: Mapped[int] = mapped_column(Integer, default=0)    # strong recent videos found
+    score: Mapped[float] = mapped_column(Float, default=0)
+    angle: Mapped[str] = mapped_column(Text, default="")
+    format: Mapped[str] = mapped_column(String(60), default="")
+
+
+class Book(Base):
+    __tablename__ = "books"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    title: Mapped[str] = mapped_column(String(200), unique=True)
+    url: Mapped[str] = mapped_column(String(300), default="")
+    themes: Mapped[list] = mapped_column(JSON, default=list)
+    active: Mapped[bool] = mapped_column(Boolean, default=True)
+
+
+class CommentDraft(Base):
+    """A comment for YOU to post by hand. TrendForge never posts comments."""
+    __tablename__ = "comment_drafts"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    project_id: Mapped[int] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE"), index=True)
+    run_id: Mapped[int | None] = mapped_column(ForeignKey("runs.id", ondelete="SET NULL"), nullable=True)
+    yt_id: Mapped[str] = mapped_column(String(20))
+    video_title: Mapped[str] = mapped_column(Text)
+    channel_id: Mapped[str] = mapped_column(String(40), default="")
+    channel_title: Mapped[str] = mapped_column(String(200), default="")
+    is_short: Mapped[bool] = mapped_column(Boolean, default=False)
+    body: Mapped[str] = mapped_column(Text)
+    book_id: Mapped[int | None] = mapped_column(ForeignKey("books.id", ondelete="SET NULL"), nullable=True)
+    has_link: Mapped[bool] = mapped_column(Boolean, default=False)
+    status: Mapped[str] = mapped_column(String(20), default="draft")  # draft | posted_by_you | dismissed
+    posted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
 class Reservation(Base):
     """Claude spend held for calls in flight. Lives in the database so every
     instance sees every other instance's in-flight calls."""
@@ -182,7 +269,37 @@ def init_db(eng=None) -> None:
     if settings.require_postgres and eng.url.get_backend_name() != "postgresql":
         raise RuntimeError("REQUIRE_POSTGRES=1 but DATABASE_URL is not Postgres. The cost ledger must "
                            "live in a database that survives deploys. Set DATABASE_URL to Supabase.")
-    Base.metadata.create_all(eng)
+    from sqlalchemy import text
+    with eng.begin() as conn:
+        if eng.dialect.name == "postgresql":
+            # Two instances can start together during a deploy; let one set up at a time.
+            conn.execute(text("SELECT pg_advisory_xact_lock(731101)"))
+        Base.metadata.create_all(conn)
+        _add_missing_columns(conn)
+
+
+def _add_missing_columns(bind) -> None:
+    """Additive migration: new nullable columns on existing tables (create_all
+    only creates missing TABLES). Existing rows get NULL; code treats NULL as default."""
+    from sqlalchemy import inspect, text
+    if hasattr(bind, "begin") and not hasattr(bind, "in_transaction"):   # an Engine
+        with bind.begin() as conn:
+            return _add_missing_columns(conn)
+    insp = inspect(bind)
+    dialect = bind.dialect
+    q = dialect.identifier_preparer.quote
+    exists = "IF NOT EXISTS " if dialect.name == "postgresql" else ""
+    for table in Base.metadata.sorted_tables:
+        if not insp.has_table(table.name):
+            continue
+        have = {c["name"] for c in insp.get_columns(table.name)}
+        for col in table.columns:
+            if col.name in have:
+                continue
+            if not col.nullable:
+                raise RuntimeError(f"Column {table.name}.{col.name} is NOT NULL and missing; needs a real migration.")
+            ctype = col.type.compile(dialect=dialect)
+            bind.execute(text(f"ALTER TABLE {q(table.name)} ADD COLUMN {exists}{q(col.name)} {ctype}"))
 
 
 def run_source_texts(db, run_id: int) -> list[str]:

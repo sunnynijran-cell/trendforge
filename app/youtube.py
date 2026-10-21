@@ -10,6 +10,7 @@ Docs: https://developers.google.com/youtube/v3/determine_quota_cost
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import math
 import re
@@ -56,6 +57,20 @@ class VideoStats:
     likes: int
     comments: int
     duration_s: int
+    channel_id: str = ""
+
+
+@dataclass
+class ChannelStats:
+    channel_id: str
+    title: str
+    description: str
+    subscribers: int      # 0 when the creator hides the count
+    total_views: int
+    video_count: int
+
+
+SHORT_MAX_S = 180   # YouTube Shorts can run up to 3 minutes
 
 
 def estimate_units(n_topics: int, max_results_each: list[int]) -> int:
@@ -69,6 +84,8 @@ class YouTubeSource(Protocol):
                published_after: datetime, run_id: int | None) -> list[str]: ...
 
     def videos(self, db: Session, ids: list[str], run_id: int | None) -> list[VideoStats]: ...
+
+    def channels(self, db: Session, ids: list[str], run_id: int | None) -> list[ChannelStats]: ...
 
 
 def _to_stats(item: dict) -> VideoStats:
@@ -84,6 +101,16 @@ def _to_stats(item: dict) -> VideoStats:
         likes=int(st.get("likeCount", 0)),   # can be hidden by the creator
         comments=int(st.get("commentCount", 0)),
         duration_s=parse_duration(cd.get("duration", "")),
+        channel_id=sn.get("channelId", ""),
+    )
+
+
+def _to_channel(item: dict) -> ChannelStats:
+    sn, st = item.get("snippet", {}), item.get("statistics", {})
+    return ChannelStats(
+        channel_id=item["id"], title=sn.get("title", ""), description=sn.get("description", "")[:2000],
+        subscribers=0 if st.get("hiddenSubscriberCount") else int(st.get("subscriberCount", 0)),
+        total_views=int(st.get("viewCount", 0)), video_count=int(st.get("videoCount", 0)),
     )
 
 
@@ -135,6 +162,15 @@ class LiveYouTube:
             out += [_to_stats(it) for it in data.get("items", [])]
         return out
 
+    def channels(self, db, ids, run_id):
+        out: list[ChannelStats] = []
+        for i in range(0, len(ids), VIDEOS_BATCH):
+            batch = ids[i:i + VIDEOS_BATCH]
+            data = self._get(db, "channels", {"part": "snippet,statistics", "id": ",".join(batch)},
+                             VIDEOS_COST, f"channels:{len(batch)}", run_id)
+            out += [_to_channel(it) for it in data.get("items", [])]
+        return out
+
 
 def _error_reason(r: httpx.Response) -> str:
     """Google's own error message only. Never the URL, which could hold secrets."""
@@ -158,6 +194,8 @@ class FixtureYouTube:
         shift = (now or datetime.now(timezone.utc)) - timedelta(hours=6) - newest
         for it in items:
             it["snippet"]["publishedAt"] = (parse_ts(it["snippet"]["publishedAt"]) + shift).isoformat()
+            if not it["snippet"].get("channelId"):   # synthetic, stable per channel name
+                it["snippet"]["channelId"] = "UC" + hashlib.md5(it["snippet"]["channelTitle"].encode()).hexdigest()[:22]
         self.items = {i["id"]: i for i in items}
 
     def search(self, db, query, region, max_results, published_after, run_id):
@@ -177,6 +215,20 @@ class FixtureYouTube:
             batch = ids[i:i + VIDEOS_BATCH]
             charge_youtube(db, VIDEOS_COST, f"videos:{len(batch)}", run_id, self.cfg)
             out += [_to_stats(self.items[v]) for v in batch if v in self.items]
+        return out
+
+    def channels(self, db, ids, run_id):
+        out = []
+        names = {it["snippet"]["channelId"]: it["snippet"]["channelTitle"] for it in self.items.values()}
+        for i in range(0, len(ids), VIDEOS_BATCH):
+            batch = ids[i:i + VIDEOS_BATCH]
+            charge_youtube(db, VIDEOS_COST, f"channels:{len(batch)}", run_id, self.cfg)
+            for cid in batch:
+                if cid in names:
+                    h = int(hashlib.md5(cid.encode()).hexdigest(), 16)
+                    subs = [2_000, 15_000, 90_000, 400_000, 1_500_000][h % 5]
+                    out.append(ChannelStats(cid, names[cid], f"{names[cid]} channel", subs,
+                                            subs * (40 + h % 60), 50 + h % 400))
         return out
 
 

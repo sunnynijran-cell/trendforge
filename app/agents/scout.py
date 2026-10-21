@@ -21,7 +21,9 @@ def is_relevant(query: str, v) -> bool:
     if not words:
         return True
     hay = v.title.lower()
-    return any(re.search(rf"\b{re.escape(w)}\b", hay) for w in words)
+    # Words of 4+ letters match as a word start, so "decision" also finds "decisions"
+    # and "leader" finds "leadership". Short tokens like "p6" must match whole.
+    return any(re.search(rf"\b{re.escape(w)}" + ("" if len(w) >= 4 else r"\b"), hay) for w in words)
 
 
 def run(ctx: Ctx) -> int:
@@ -52,7 +54,7 @@ def run(ctx: Ctx) -> int:
     stats = kept
     for s in stats:
         ctx.db.add(Video(run_id=ctx.run.id, topic_id=seen.get(s.yt_id), yt_id=s.yt_id, title=s.title,
-                         channel_title=s.channel_title, description=s.description, tags=s.tags,
+                         channel_title=s.channel_title, channel_id=s.channel_id, description=s.description, tags=s.tags,
                          published_at=s.published_at, views=s.views, likes=s.likes,
                          comments=s.comments, duration_s=s.duration_s))
     ctx.db.flush()

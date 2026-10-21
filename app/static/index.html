@@ -70,6 +70,13 @@ th{font:600 12px Montserrat,sans-serif;text-transform:uppercase;color:var(--mute
 #toast.show{opacity:1}#toast.err{background:var(--bad)}
 .chips label{display:inline-flex;gap:6px;align-items:center;font-weight:400;margin:4px 12px 4px 0}
 .empty{padding:24px;text-align:center;color:var(--muted)}
+body.learning nav .content-only, body:not(.learning) nav .learn{display:none}
+.mantra{font:700 20px/1.3 Montserrat,sans-serif;color:var(--navy)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .mantra{color:var(--gold)}}
+.cardgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.lens{border-left:4px solid var(--gold)}
+.lens .voice{font:600 12px Montserrat,sans-serif;text-transform:uppercase;color:var(--muted)}
+.callout{background:var(--gold-soft);border-radius:8px;padding:10px 12px;margin-top:10px}
 header .badge{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25)}
 @media (max-width:640px){.pipeline{display:grid;grid-template-columns:1fr 1fr;overflow:visible}.pipeline .arrow{display:none}.stage{flex:none}}
 </style>
@@ -82,10 +89,15 @@ header .badge{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(
 </header>
 <nav role="tablist">
   <button role="tab" data-tab="overview" aria-selected="true">Overview</button>
-  <button role="tab" data-tab="review">Review queue <span id="pendingCount" class="badge b-pending_review"></span></button>
+  <button role="tab" data-tab="review" class="content-only">Review queue <span id="pendingCount" class="badge b-pending_review"></span></button>
   <button role="tab" data-tab="trends">Trends</button>
+  <button role="tab" data-tab="lenses" class="learn">Lenses</button>
+  <button role="tab" data-tab="voices" class="learn">Voices</button>
+  <button role="tab" data-tab="gaps" class="learn">Gaps</button>
+  <button role="tab" data-tab="comments" class="learn">Comments</button>
   <button role="tab" data-tab="log">Run log</button>
   <button role="tab" data-tab="projects">Projects &amp; topics</button>
+  <button role="tab" data-tab="books">Books</button>
 </nav>
 <main>
 <!-- TOP-DOWN -->
@@ -123,6 +135,45 @@ header .badge{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(
 </section>
 
 <!-- BOTTOM-UP -->
+<section id="tab-lenses" hidden>
+  <div class="card lens" id="daily"></div>
+  <div class="card">
+    <h2 style="font-size:18px">What do I do now?</h2>
+    <form id="sitForm" class="row" style="margin-top:8px"><input id="sitText" data-testid="situation-input" placeholder="e.g. client says our fee is too high" style="flex:1 1 240px" minlength="3" required><button class="btn gold" type="submit">Get my lenses</button></form>
+    <div id="sitOut" data-testid="situation-out"></div>
+  </div>
+  <h3 style="font-size:15px;margin:8px 0">All lens cards</h3>
+  <div class="cardgrid" id="cards"></div>
+</section>
+
+<section id="tab-voices" hidden>
+  <div class="card"><div class="muted small">Ranked by views on this run's videos. Rising = smaller channel pulling views well above its size. Heavily political channels are dropped automatically.</div>
+  <div class="scroll"><table id="voicesTbl"></table></div></div>
+</section>
+
+<section id="tab-gaps" hidden>
+  <div class="card"><div class="muted small">For the subjects you cover: demand is views per hour across the top recent videos, supply is how many strong recent videos already exist. High score = big audience, thin coverage.</div>
+  <div class="scroll"><table id="gapsTbl"></table></div></div>
+</section>
+
+<section id="tab-comments" hidden>
+  <div class="row" style="margin-bottom:12px"><select id="cmFilter"><option value="draft">Drafts for you</option><option value="posted_by_you">Posted by you</option><option value="dismissed">Dismissed</option></select>
+  <span class="muted small">TrendForge never posts. Copy a draft, post it yourself on YouTube, then tap "I posted it" so the link limit counts it.</span></div>
+  <div id="comments"></div>
+</section>
+
+<section id="tab-books" hidden>
+  <div class="grid2">
+    <div class="card"><h3 style="font-size:15px;margin-bottom:8px">Your books</h3><div id="booksList"></div></div>
+    <form class="card" id="bookForm"><h3 style="font-size:15px">Add a book</h3>
+      <label for="bk-title">Title</label><input id="bk-title" required maxlength="200" style="width:100%">
+      <label for="bk-url">Link (https://)</label><input id="bk-url" type="url" pattern="https://.*" style="width:100%">
+      <label for="bk-themes">Themes it covers (comma separated)</label><input id="bk-themes" placeholder="decisions, leadership, delivery" style="width:100%">
+      <div class="small muted" style="margin-top:6px">A comment only links a book when the video matches one of its themes. One link per channel per 30 days. Never on Shorts.</div>
+      <div style="margin-top:12px"><button class="btn" type="submit">Add book</button></div></form>
+  </div>
+</section>
+
 <section id="tab-log" hidden>
   <div class="card"><div class="row" style="margin-bottom:8px"><label for="logRun" style="margin:0">Run</label><select id="logRun"></select></div>
   <ul class="log" id="logList" data-testid="log-list"></ul></div>
@@ -139,6 +190,8 @@ header .badge{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(
       <label for="np-rules">Brand rules</label><textarea id="np-rules" style="min-height:70px" placeholder="UK spelling. Short sentences. No hype."></textarea>
       <label>Outputs to make</label><div class="chips" id="np-types"></div>
       <label for="np-banned">Banned terms (comma separated)</label><input id="np-banned" style="width:100%">
+      <label for="np-mode">Mode</label><select id="np-mode" data-testid="mode-select"><option value="content">Content: make things to publish</option><option value="learning">Learning: lenses, voices, gaps, comment drafts</option></select>
+      <label for="np-cov">What I cover (one per line, for the gap finder)</label><textarea id="np-cov" style="min-height:70px" placeholder="decision latency&#10;India nuclear new build"></textarea>
       <div style="margin-top:12px"><button class="btn" type="submit">Create project</button></div>
     </form>
   </div>
@@ -165,7 +218,10 @@ document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
   refreshTab(b.dataset.tab);
 });
 function currentTab(){return document.querySelector('nav button[aria-selected="true"]').dataset.tab}
-function refreshTab(t){({overview:loadOverview,review:loadItems,trends:loadTrends,log:loadLog,projects:renderProject})[t]?.()}
+function refreshTab(t){({overview:loadOverview,review:loadItems,trends:loadTrends,log:loadLog,projects:renderProject,lenses:loadLenses,voices:loadVoices,gaps:loadGaps,comments:loadComments,books:loadBooks})[t]?.()}
+function applyMode(){document.body.classList.toggle("learning",project()?.mode==="learning");
+  const cur=document.querySelector('nav button[aria-selected="true"]');
+  if(cur&&getComputedStyle(cur).display==="none")document.querySelector('nav button[data-tab="overview"]').click()}
 
 async function loadProjects(selectId){
   S.projects=await api("/api/projects");
@@ -174,12 +230,14 @@ async function loadProjects(selectId){
   if(selectId)S.pid=selectId;
   if(!S.projects.find(p=>p.id===S.pid))S.pid=S.projects[0]?.id??null;
   if(S.pid)sel.value=S.pid;
+  applyMode();
 }
-$("#projectSel").onchange=e=>{S.pid=+e.target.value;S.latestRun=null;refreshTab(currentTab())};
+$("#projectSel").onchange=e=>{S.pid=+e.target.value;S.latestRun=null;applyMode();refreshTab(currentTab())};
 const project=()=>S.projects.find(p=>p.id===S.pid);
 
 // ---------- overview (top-down) ----------
-const STAGES=[["scout","Scout","videos pulled"],["analyst","Analyst","trends scored"],["designer","Designer","briefs"],["maker","Maker","items made"],["review","You approve","waiting"],["publisher","Publisher","published"]];
+const CONTENT_STAGES=[["scout","Scout","videos pulled"],["analyst","Analyst","trends scored"],["designer","Designer","briefs"],["maker","Maker","items made"],["review","You approve","waiting"],["publisher","Publisher","published"]];
+const LEARNING_STAGES=[["scout","Scout","videos pulled"],["voices","Voices","usable voices"],["analyst","Analyst","trends scored"],["distil","Distil","lens cards"],["gaps","Gaps","subjects checked"],["comments","Comments","drafts for you"]];
 async function loadOverview(){
   const u=await api("/api/usage");
   $("#modes").innerHTML=`<span class="badge">${esc(u.youtube_mode)}</span> <span class="badge">${esc(u.llm_mode)}</span>`;
@@ -201,12 +259,14 @@ async function loadOverview(){
   clearInterval(S.poll);if(busy)S.poll=setInterval(()=>{if(currentTab()==="overview")loadOverview()},1500);
 }
 function renderPipeline(r){
+  const learn=project()?.mode==="learning";const STAGES=learn?LEARNING_STAGES:CONTENT_STAGES;
   const order=STAGES.map(s=>s[0]);
-  const at=r?order.indexOf(r.stage==="done"?"publisher":r.stage):-1;
+  const at=r?order.indexOf(r.stage==="done"?order[order.length-1]:r.stage==="review"&&learn?order[order.length-1]:r.stage):-1;
   const items=r?r.items:[];
   const n={scout:r?r.events.filter(e=>e.agent==="scout"&&/Stored/.test(e.message)).map(e=>+e.message.match(/Stored (\d+)/)[1])[0]??0:0,
     analyst:r?r.trends.length:0,designer:r?r.briefs.length:0,maker:items.length,
-    review:items.filter(i=>i.status==="pending_review").length,publisher:items.filter(i=>i.status==="published").length};
+    review:items.filter(i=>i.status==="pending_review").length,publisher:items.filter(i=>i.status==="published").length,
+    voices:r?.learning?.voices??0,distil:r?.learning?.cards??0,gaps:r?.learning?.gaps??0,comments:r?.learning?.comments??0};
   $("#pipeline").innerHTML=STAGES.map(([k,label,unit],i)=>{
     let cls="stage";if(k==="review")cls+=" gate";
     if(r){if(r.status==="failed"&&i===at)cls+=" fail";else if(i<at||(r.status!=="running"&&r.status!=="queued"&&i<=at&&k!=="review"))cls+=" done";else if(i===at)cls+=" active"}
@@ -232,7 +292,7 @@ async function loadItems(){
   updatePending();
   const st=$("#itemFilter").value;
   const items=await api(`/api/items?project_id=${S.pid}${st?`&status=${st}`:""}`);
-  const targets=(S.meta||{}).publish_targets||["export"];
+  const targets=(S.meta||{}).publish_targets||[];
   $("#items").innerHTML=items.length?items.map(i=>`
    <div class="card item" data-testid="item-${i.id}" data-status="${i.status}">
     <div class="row" style="justify-content:space-between"><h3>${esc(i.title)}</h3><span class="badge b-${i.status}">${i.status.replace("_"," ")}</span></div>
@@ -245,7 +305,7 @@ async function loadItems(){
     <div class="row" style="margin-top:10px">
      ${i.status==="pending_review"?`<button class="btn" data-act="approve" data-id="${i.id}">Approve</button>`:""}
      ${["pending_review","blocked","approved"].includes(i.status)?`<button class="btn ghost" data-act="reject" data-id="${i.id}">Reject</button>`:""}
-     ${i.status==="approved"?`<select id="tg${i.id}">${targets.map(t=>`<option>${t}</option>`).join("")}</select><button class="btn gold" data-act="publish" data-id="${i.id}">Publish</button>`:""}
+     ${i.status==="approved"?(targets.length?`<select id="tg${i.id}">${targets.map(t=>`<option>${t}</option>`).join("")}</select><button class="btn gold" data-act="publish" data-id="${i.id}">Publish</button>`:`<span class="small muted" data-testid="publishing-off">Publishing is switched off.</span>`):""}
      ${i.status==="published"?`<input id="pv${i.id}" type="number" min="0" placeholder="views" style="width:90px"><input id="pc${i.id}" type="number" min="0" placeholder="clicks" style="width:90px"><input id="pl${i.id}" type="number" min="0" placeholder="leads" style="width:90px"><button class="btn ghost" data-act="perf" data-id="${i.id}">Record results</button>${i.performance?.score!=null?`<span class="small">score ${i.performance.score.toFixed(1)}</span>`:""}`:""}
     </div></div>`).join(""):'<div class="empty card">Nothing here.</div>';
 }
@@ -288,7 +348,7 @@ function renderProject(){
   const p=project();const box=$("#projDetail");
   if(!p){box.innerHTML='<div class="empty">No project selected. Create one.</div>';return}
   box.innerHTML=`<h3 style="font-size:15px">${esc(p.name)}</h3><div class="small muted">${esc(p.description)}</div>
-   <div class="small" style="margin-top:6px"><b>Audience:</b> ${esc(p.audience)||"-"}<br><b>Outputs:</b> ${p.output_types.map(esc).join(", ")}<br><b>Banned:</b> ${p.banned_terms.map(esc).join(", ")||"-"}</div>
+   <div class="small" style="margin-top:6px"><b>Audience:</b> ${esc(p.audience)||"-"}<br><b>Outputs:</b> ${p.output_types.map(esc).join(", ")}<br><b>Banned:</b> ${p.banned_terms.map(esc).join(", ")||"-"}<br><b>Mode:</b> ${esc(p.mode)}${p.mode==="learning"?`<br><b>I cover:</b> ${p.coverage.map(esc).join(", ")||"-"}`:""}</div>
    <label style="margin-top:14px">Search topics</label>
    <table data-testid="topics">${p.topics.map(t=>`<tr><td>${esc(t.query)}</td><td class="small">${t.region}, ${t.max_results} results, ${t.lookback_days}d</td><td><button class="btn ghost" data-deltopic="${t.id}">Remove</button></td></tr>`).join("")||'<tr><td class="muted">None yet.</td></tr>'}</table>
    <form id="topicForm" class="row" style="margin-top:10px"><input id="tq" placeholder="e.g. primavera p6" required minlength="2" style="flex:1 1 180px" data-testid="topic-input">
@@ -304,16 +364,87 @@ $("#newProject").onsubmit=async e=>{
   e.preventDefault();
   const types=[...document.querySelectorAll("#np-types input:checked")].map(i=>i.value);
   try{
-    const p=await api("/api/projects",{method:"POST",body:JSON.stringify({name:$("#np-name").value.trim(),description:$("#np-desc").value,audience:$("#np-aud").value,brand_rules:$("#np-rules").value,output_types:types.length?types:["linkedin_post"],banned_terms:$("#np-banned").value.split(",").map(s=>s.trim()).filter(Boolean)})});
+    const p=await api("/api/projects",{method:"POST",body:JSON.stringify({name:$("#np-name").value.trim(),description:$("#np-desc").value,audience:$("#np-aud").value,brand_rules:$("#np-rules").value,output_types:types.length?types:["linkedin_post"],banned_terms:$("#np-banned").value.split(",").map(s=>s.trim()).filter(Boolean),mode:$("#np-mode").value,coverage:$("#np-cov").value.split("\n").map(s=>s.trim()).filter(Boolean)})});
     e.target.reset();await loadProjects(p.id);renderProject();toast(`Created ${p.name}.`);
   }catch(err){toast(err.message,true)}
 };
+
+// ---------- learning: lenses ----------
+const cardHtml=(c,fb=true)=>`<div class="card lens" data-testid="lens-card"><div class="voice">${esc(c.voice)}</div><div class="mantra">${esc(c.mantra)}</div>
+  <div style="margin-top:6px">${esc(c.principle)}</div><div class="small muted" style="margin-top:4px">${esc(c.why)}</div>
+  <div class="small" style="margin-top:6px"><b>Use when:</b> ${esc(c.use_when)}<br><b>Not when:</b> ${esc(c.avoid_when)}</div>
+  ${c.scenarios.length?`<div style="margin-top:6px">${c.scenarios.map(x=>`<span class="badge">${esc(x)}</span>`).join(" ")}</div>`:""}
+  <div class="row small" style="margin-top:8px">${c.source_url?`<a href="${esc(c.source_url)}" target="_blank" rel="noopener">Source video</a>`:""}<span class="muted">used ${c.uses}, helped ${c.helped}</span></div>
+  <div class="row" style="margin-top:8px">${fb?`<button class="btn ghost" data-fb="1" data-id="${c.id}">Helped</button><button class="btn ghost" data-fb="0" data-id="${c.id}">Didn't</button><button class="btn ghost" data-arch="${c.id}">Archive</button>`:""}</div></div>`;
+async function loadLenses(){
+  if(!S.pid)return;
+  const d=await api(`/api/projects/${S.pid}/daily`);
+  $("#daily").innerHTML=d?`<div class="voice">Today's mantra</div><div class="mantra">${esc(d.mantra)}</div><div class="small">${esc(d.principle)}</div>`:'<div class="empty">No cards yet. Run the pipeline on a learning project.</div>';
+  const cards=await api(`/api/projects/${S.pid}/cards`);
+  $("#cards").innerHTML=cards.map(c=>cardHtml(c)).join("")||'<div class="empty">No cards yet.</div>';
+}
+$("#sitForm").onsubmit=async e=>{e.preventDefault();$("#sitOut").innerHTML='<div class="small muted">Thinking...</div>';
+  try{const r=await api(`/api/projects/${S.pid}/situation`,{method:"POST",body:JSON.stringify({text:$("#sitText").value})});
+    $("#sitOut").innerHTML=r.cards.length?`<div class="callout"><b>First move:</b> ${esc(r.first_move)}${r.tension?`<br><b>Tension:</b> ${esc(r.tension)}`:""}</div><div class="cardgrid" style="margin-top:10px">${r.cards.map(c=>cardHtml(c)).join("")}</div>`:`<div class="small muted">${esc(r.first_move)}</div>`}
+  catch(err){$("#sitOut").innerHTML="";toast(err.message,true)}};
+document.addEventListener("click",async e=>{
+  const fb=e.target.closest("[data-fb]"),ar=e.target.closest("[data-arch]");
+  try{
+    if(fb){await api(`/api/cards/${fb.dataset.id}/feedback`,{method:"POST",body:JSON.stringify({helped:fb.dataset.fb==="1"})});toast("Noted.");if(currentTab()==="lenses"&&!fb.closest("#sitOut"))loadLenses()}
+    if(ar){await api(`/api/cards/${ar.dataset.arch}/archive`,{method:"POST"});toast("Archived.");loadLenses()}
+  }catch(err){toast(err.message,true)}
+});
+// ---------- voices / gaps ----------
+async function loadVoices(){
+  if(!S.pid)return;
+  const v=await api(`/api/projects/${S.pid}/voices`);
+  $("#voicesTbl").innerHTML=v.length?`<tr><th>Voice</th><th>Tier</th><th>Subscribers</th><th>Views this run</th><th>Focus</th><th></th></tr>`+v.map(x=>`<tr data-testid="voice-row" style="${x.hidden||x.political?"opacity:.5":""}"><td><a href="${esc(x.channel_url)}" target="_blank" rel="noopener">${esc(x.title)}</a></td><td><span class="badge ${x.tier==="rising"?"b-approved":""}">${esc(x.tier)}</span>${x.political?' <span class="badge b-blocked">political</span>':""}</td><td>${x.subscribers?x.subscribers.toLocaleString():"hidden"}</td><td>${x.recent_views.toLocaleString()}</td><td class="small">${esc(x.focus)}</td><td><button class="btn ghost" data-hide="${x.id}" data-v="${x.hidden?0:1}">${x.hidden?"Show":"Hide"}</button></td></tr>`).join(""):'<tr><td class="empty">No voices yet. Run a learning project.</td></tr>';
+}
+$("#voicesTbl").onclick=async e=>{const b=e.target.closest("[data-hide]");if(!b)return;
+  await api(`/api/voices/${b.dataset.hide}/hide`,{method:"POST",body:JSON.stringify({hidden:b.dataset.v==="1"})});loadVoices()};
+async function loadGaps(){
+  if(!S.pid)return;
+  const g=await api(`/api/projects/${S.pid}/gaps`);
+  $("#gapsTbl").innerHTML=g.length?`<tr><th>Subject</th><th>Score</th><th>Demand (views/hr)</th><th>Strong recent videos</th><th>Suggested angle</th></tr>`+g.map(x=>`<tr data-testid="gap-row"><td><b>${esc(x.subject)}</b></td><td>${x.score.toLocaleString()}</td><td>${Math.round(x.demand).toLocaleString()}</td><td>${x.supply}</td><td class="small">${esc(x.angle)}${x.format?` <span class="badge">${esc(x.format)}</span>`:""}</td></tr>`).join(""):'<tr><td class="empty">No gaps yet. Add "What I cover" subjects to the project, then run it.</td></tr>';
+}
+// ---------- comments ----------
+$("#cmFilter").onchange=loadComments;
+async function loadComments(){
+  if(!S.pid)return;
+  const st=$("#cmFilter").value;
+  const c=await api(`/api/projects/${S.pid}/comments?status=${st}`);
+  $("#comments").innerHTML=c.map(x=>`<div class="card" data-testid="comment-${x.id}"><div class="row" style="justify-content:space-between"><a href="${esc(x.video_url)}" target="_blank" rel="noopener"><b>${esc(x.video_title)}</b></a>${x.has_link?'<span class="badge b-approved">book link</span>':""}${x.is_short?' <span class="badge">Short: no links</span>':""}</div>
+   <div class="small muted">${esc(x.channel_title)}</div>
+   ${st==="draft"?`<textarea id="cm${x.id}" style="min-height:90px;margin-top:8px">${esc(x.body)}</textarea>
+   <div class="row" style="margin-top:8px"><button class="btn ghost" data-cm="copy" data-id="${x.id}">Copy</button><button class="btn ghost" data-cm="save" data-id="${x.id}">Save edit</button><button class="btn" data-cm="posted" data-id="${x.id}">I posted it</button><button class="btn ghost" data-cm="dismiss" data-id="${x.id}">Dismiss</button></div>`:`<pre style="white-space:pre-wrap;font:inherit">${esc(x.body)}</pre>`}</div>`).join("")||'<div class="empty card">Nothing here.</div>';
+}
+$("#comments").onclick=async e=>{const b=e.target.closest("[data-cm]");if(!b)return;const id=b.dataset.id;
+  try{
+    if(b.dataset.cm==="copy"){await navigator.clipboard.writeText($("#cm"+id).value);toast("Copied. Paste it on YouTube.");return}
+    if(b.dataset.cm==="save")await api(`/api/comments/${id}`,{method:"PATCH",body:JSON.stringify({body:$("#cm"+id).value})});
+    if(b.dataset.cm==="posted"){await api(`/api/comments/${id}`,{method:"PATCH",body:JSON.stringify({body:$("#cm"+id).value})});await api(`/api/comments/${id}/posted`,{method:"POST"})}
+    if(b.dataset.cm==="dismiss")await api(`/api/comments/${id}/dismiss`,{method:"POST"});
+    toast("Done.");loadComments();
+  }catch(err){toast(err.message,true)}};
+// ---------- books ----------
+async function loadBooks(){
+  const b=await api("/api/books");
+  $("#booksList").innerHTML=b.map(x=>`<div style="padding:8px 0;border-bottom:1px solid var(--line)" data-testid="book-row"><b>${esc(x.title)}</b> ${x.active?"":'<span class="badge">paused</span>'}<div class="small">${x.url?`<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.url)}</a>`:"No link yet"}</div><div class="small muted">${x.themes.map(esc).join(", ")}</div>
+   <div class="row" style="margin-top:6px"><button class="btn ghost" data-bk="toggle" data-id="${x.id}" data-a="${x.active?0:1}">${x.active?"Pause":"Resume"}</button><button class="btn ghost" data-bk="del" data-id="${x.id}">Remove</button></div></div>`).join("")||'<div class="empty">No books yet.</div>';
+}
+$("#booksList").onclick=async e=>{const b=e.target.closest("[data-bk]");if(!b)return;
+  if(b.dataset.bk==="toggle")await api(`/api/books/${b.dataset.id}`,{method:"PATCH",body:JSON.stringify({active:b.dataset.a==="1"})});
+  if(b.dataset.bk==="del"){if(!confirm("Remove this book?"))return;await api(`/api/books/${b.dataset.id}`,{method:"DELETE"})}
+  loadBooks()};
+$("#bookForm").onsubmit=async e=>{e.preventDefault();
+  try{await api("/api/books",{method:"POST",body:JSON.stringify({title:$("#bk-title").value.trim(),url:$("#bk-url").value.trim(),themes:$("#bk-themes").value.split(",").map(s=>s.trim()).filter(Boolean)})});e.target.reset();toast("Book added.");loadBooks()}
+  catch(err){toast(err.message,true)}};
 
 (async function boot(){
   try{
     S.meta=await api("/api/meta");
     $("#np-types").innerHTML=S.meta.output_types.map(t=>`<label><input type="checkbox" value="${t}" ${t==="linkedin_post"?"checked":""}>${t.replaceAll("_"," ")}</label>`).join("");
-    await loadProjects();await loadOverview();
+    await loadProjects();applyMode();await loadOverview();
   }catch(e){toast(e.message,true)}
 })();
 </script>

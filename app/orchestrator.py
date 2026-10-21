@@ -10,15 +10,24 @@ from datetime import datetime, timedelta, timezone
 from sqlalchemy import func, select, update
 from sqlalchemy.orm import Session
 
-from .agents import analyst, designer, maker, scout
+from .agents import analyst, designer, learning, maker, scout
 from .agents.base import Ctx
 from .config import Settings, settings
-from .db import EventLog, Item, Project, Run, SessionLocal, Usage, as_utc
+from .db import EventLog, Item, LensCard, Project, Run, SessionLocal, Usage, as_utc
 from .ledger import llm_spend_run
 from .llm import LLM, get_llm
 from .youtube import YouTubeSource, get_source
 
-STAGES = [("scout", scout.run), ("analyst", analyst.run), ("designer", designer.run), ("maker", maker.run)]
+# (name, function, required). A required stage that produces nothing stops the run.
+STAGES = [("scout", scout.run, True), ("analyst", analyst.run, True),
+          ("designer", designer.run, True), ("maker", maker.run, True)]
+LEARNING_STAGES = [("scout", scout.run, True), ("voices", learning.run_voices, True),
+                   ("analyst", analyst.run, True), ("distil", learning.run_distil, True),
+                   ("gaps", learning.run_gaps, False), ("comments", learning.run_comments, False)]
+
+
+def stages_for(project: Project):
+    return LEARNING_STAGES if (project.mode or "content") == "learning" else STAGES
 STALE_AFTER = timedelta(minutes=10)   # no heartbeat for this long = the run is dead
 HEARTBEAT_EVERY = 20                  # seconds, from a side thread, so slow model calls never look dead
 _locks: dict[int, threading.Lock] = {}
@@ -109,22 +118,35 @@ def execute(run_id: int, session_factory=SessionLocal, yt: YouTubeSource | None 
                           llm=llm or get_llm(cfg), cfg=cfg)
                 run.status = "running"
                 db.commit()
-                for name, fn in STAGES:
+                for name, fn, required in stages_for(project):
                     run.stage = name
                     db.commit()
-                    n = fn(ctx)
+                    if required:
+                        n = fn(ctx)
+                    else:
+                        try:                 # optional stage: a failure here never sinks the run
+                            n = fn(ctx)
+                        except Exception as e:
+                            db.rollback()
+                            ctx.log(name, f"Skipped: {type(e).__name__}: {e}", "warn")
+                            n = 0
                     db.commit()
-                    if n == 0:
+                    if n == 0 and required:
                         raise RuntimeError(f"{name} produced nothing, so the pipeline stopped. See the run log.")
                 run.status = "awaiting_approval"
                 run.stage = "review"
-                ctx.log("orchestrator", "Items are in your review queue. Nothing publishes until you approve.")
-                close_if_reviewed(db, run.id)   # e.g. every item was blocked
+                close_if_reviewed(db, run.id)   # learning runs, or every item blocked: straight to done
+                # ctx.log commits, so the final status is written once; no in-between state is visible
+                if (project.mode or "content") == "learning":
+                    ctx.log("orchestrator", "Lens cards, gaps and comment drafts are ready. Nothing is posted.")
+                else:
+                    ctx.log("orchestrator", "Items are in your review queue. Nothing publishes until you approve.")
             except Exception as e:
                 db.rollback()
                 run = db.get(Run, run_id)
                 msg = f"{type(e).__name__}: {e}"[:2000]
-                made = db.scalar(select(func.count()).select_from(Item).where(Item.run_id == run.id))
+                made = db.scalar(select(func.count()).select_from(Item).where(Item.run_id == run.id)) + \
+                    db.scalar(select(func.count()).select_from(LensCard).where(LensCard.run_id == run.id))
                 if made:   # e.g. budget hit mid-Maker: keep what was made reviewable
                     run.status, run.stage = "awaiting_approval", "review"
                     run.error = f"Partial run, {made} item(s) made before it stopped. {msg}"
