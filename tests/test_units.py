@@ -110,6 +110,9 @@ def test_relevance_filter_drops_off_topic():
     assert is_relevant("", board)
     assert is_relevant("decision making", NS(title="Why big decisions take too long", tags=[], description=""))
     assert not is_relevant("p6", NS(title="P60 tax form explained", tags=[], description=""))
+    assert not is_relevant("sales psychology", NS(title="egg selling Mindset #youtubeshorts #psychology",
+                                                  tags=[], description=""))
+    assert is_relevant("sales psychology", NS(title="The psychology of a yes #sales", tags=[], description=""))
 
 
 def test_fake_model_books_no_spend_on_a_keyless_deploy(db):

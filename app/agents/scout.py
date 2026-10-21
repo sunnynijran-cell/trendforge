@@ -20,7 +20,7 @@ def is_relevant(query: str, v) -> bool:
     words = [w for w in re.findall(r"[a-z0-9]+", query.lower()) if len(w) > 1 and w not in STOP]
     if not words:
         return True
-    hay = v.title.lower()
+    hay = re.sub(r"#\S+", " ", v.title.lower())   # hashtags are stuffing too: '#psychology' doesn't count
     # Words of 4+ letters match as a word start, so "decision" also finds "decisions"
     # and "leader" finds "leadership". Short tokens like "p6" must match whole.
     return any(re.search(rf"\b{re.escape(w)}" + ("" if len(w) >= 4 else r"\b"), hay) for w in words)
