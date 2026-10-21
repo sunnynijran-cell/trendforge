@@ -1,0 +1,981 @@
+{
+ "_note": "Synthetic fixture in YouTube Data API v3 videos.list shape. Titles and channels are fictional.",
+ "items": [
+  {
+   "kind": "youtube#video",
+   "id": "fx000000001",
+   "snippet": {
+    "publishedAt": "2026-10-12T02:20:07Z",
+    "title": "Primavera P6 critical path in 10 minutes",
+    "description": "In this video we cover primavera p6 critical path in 10 minutes. Subscribe for more on primavera p6 project controls.",
+    "channelTitle": "Lead Better Daily",
+    "tags": [
+     "primavera",
+     "p6",
+     "project",
+     "controls",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "6240",
+    "likeCount": "145",
+    "commentCount": "38"
+   },
+   "contentDetails": {
+    "duration": "PT2M37S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000002",
+   "snippet": {
+    "publishedAt": "2026-10-14T20:53:30Z",
+    "title": "P6 baseline mistakes planners still make",
+    "description": "In this video we cover p6 baseline mistakes planners still make. Subscribe for more on primavera p6 project controls.",
+    "channelTitle": "Lead Better Daily",
+    "tags": [
+     "primavera",
+     "p6",
+     "project",
+     "controls",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "27235",
+    "likeCount": "597",
+    "commentCount": "149"
+   },
+   "contentDetails": {
+    "duration": "PT13M14S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000003",
+   "snippet": {
+    "publishedAt": "2026-10-14T12:32:31Z",
+    "title": "Project controls career path 2026",
+    "description": "In this video we cover project controls career path 2026. Subscribe for more on primavera p6 project controls. The hidden truth about project controls careers nobody tells you about in interviews.",
+    "channelTitle": "Build With Bots",
+    "tags": [
+     "primavera",
+     "p6",
+     "project",
+     "controls",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "53468",
+    "likeCount": "1890",
+    "commentCount": "149"
+   },
+   "contentDetails": {
+    "duration": "PT24M21S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000004",
+   "snippet": {
+    "publishedAt": "2026-10-18T22:43:25Z",
+    "title": "Earned value explained with one chart",
+    "description": "In this video we cover earned value explained with one chart. Subscribe for more on primavera p6 project controls.",
+    "channelTitle": "Controls Corner",
+    "tags": [
+     "primavera",
+     "p6",
+     "project",
+     "controls",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "17716",
+    "likeCount": "542",
+    "commentCount": "47"
+   },
+   "contentDetails": {
+    "duration": "PT23M29S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000005",
+   "snippet": {
+    "publishedAt": "2026-10-13T09:54:51Z",
+    "title": "DCMA 14 point check walkthrough in P6",
+    "description": "In this video we cover dcma 14 point check walkthrough in p6. Subscribe for more on primavera p6 project controls.",
+    "channelTitle": "Project Pulse",
+    "tags": [
+     "primavera",
+     "p6",
+     "project",
+     "controls",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "146945",
+    "likeCount": "6336",
+    "commentCount": "995"
+   },
+   "contentDetails": {
+    "duration": "PT11M36S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000006",
+   "snippet": {
+    "publishedAt": "2026-10-17T19:09:34Z",
+    "title": "Why your P6 float is lying to you",
+    "description": "In this video we cover why your p6 float is lying to you. Subscribe for more on primavera p6 project controls.",
+    "channelTitle": "Grid Talk",
+    "tags": [
+     "primavera",
+     "p6",
+     "project",
+     "controls",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "16496",
+    "likeCount": "990",
+    "commentCount": "32"
+   },
+   "contentDetails": {
+    "duration": "PT6M42S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000007",
+   "snippet": {
+    "publishedAt": "2026-10-16T20:18:17Z",
+    "title": "Project controls interview questions answered",
+    "description": "In this video we cover project controls interview questions answered. Subscribe for more on primavera p6 project controls.",
+    "channelTitle": "Bangkok Bites Life",
+    "tags": [
+     "primavera",
+     "p6",
+     "project",
+     "controls",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "36085",
+    "likeCount": "1939",
+    "commentCount": "71"
+   },
+   "contentDetails": {
+    "duration": "PT8M59S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000008",
+   "snippet": {
+    "publishedAt": "2026-10-12T02:09:36Z",
+    "title": "Schedule risk analysis Monte Carlo basics",
+    "description": "In this video we cover schedule risk analysis monte carlo basics. Subscribe for more on primavera p6 project controls.",
+    "channelTitle": "Build With Bots",
+    "tags": [
+     "primavera",
+     "p6",
+     "project",
+     "controls",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "40243",
+    "likeCount": "2437",
+    "commentCount": "257"
+   },
+   "contentDetails": {
+    "duration": "PT1M51S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000009",
+   "snippet": {
+    "publishedAt": "2026-10-16T05:28:16Z",
+    "title": "I built an AI agent team that runs my business",
+    "description": "In this video we cover i built an ai agent team that runs my business. Subscribe for more on ai agents automation.",
+    "channelTitle": "Grid Talk",
+    "tags": [
+     "ai",
+     "agents",
+     "automation",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "13953",
+    "likeCount": "928",
+    "commentCount": "99"
+   },
+   "contentDetails": {
+    "duration": "PT6M41S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000010",
+   "snippet": {
+    "publishedAt": "2026-10-13T21:14:06Z",
+    "title": "Claude Code agents tutorial for beginners",
+    "description": "In this video we cover claude code agents tutorial for beginners. Subscribe for more on ai agents automation.",
+    "channelTitle": "Lead Better Daily",
+    "tags": [
+     "ai",
+     "agents",
+     "automation",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "297189",
+    "likeCount": "5519",
+    "commentCount": "536"
+   },
+   "contentDetails": {
+    "duration": "PT17M16S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000011",
+   "snippet": {
+    "publishedAt": "2026-10-10T17:24:49Z",
+    "title": "AI agents replace 5 tools in my workflow",
+    "description": "In this video we cover ai agents replace 5 tools in my workflow. Subscribe for more on ai agents automation.",
+    "channelTitle": "Agent Lab",
+    "tags": [
+     "ai",
+     "agents",
+     "automation",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "18338",
+    "likeCount": "581",
+    "commentCount": "146"
+   },
+   "contentDetails": {
+    "duration": "PT16M31S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000012",
+   "snippet": {
+    "publishedAt": "2026-10-19T02:10:54Z",
+    "title": "Multi agent systems explained simply",
+    "description": "In this video we cover multi agent systems explained simply. Subscribe for more on ai agents automation.",
+    "channelTitle": "Bangkok Bites Life",
+    "tags": [
+     "ai",
+     "agents",
+     "automation",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "105556",
+    "likeCount": "3729",
+    "commentCount": "132"
+   },
+   "contentDetails": {
+    "duration": "PT19M29S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000013",
+   "snippet": {
+    "publishedAt": "2026-10-13T12:05:27Z",
+    "title": "AI automation for consultants that actually works",
+    "description": "In this video we cover ai automation for consultants that actually works. Subscribe for more on ai agents automation.",
+    "channelTitle": "Planner Pete",
+    "tags": [
+     "ai",
+     "agents",
+     "automation",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "64550",
+    "likeCount": "1678",
+    "commentCount": "349"
+   },
+   "contentDetails": {
+    "duration": "PT9M27S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000014",
+   "snippet": {
+    "publishedAt": "2026-10-18T05:36:13Z",
+    "title": "Building an AI agent with a dashboard",
+    "description": "In this video we cover building an ai agent with a dashboard. Subscribe for more on ai agents automation.",
+    "channelTitle": "Lead Better Daily",
+    "tags": [
+     "ai",
+     "agents",
+     "automation",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "88139",
+    "likeCount": "1444",
+    "commentCount": "467"
+   },
+   "contentDetails": {
+    "duration": "PT19M12S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000015",
+   "snippet": {
+    "publishedAt": "2026-10-18T07:13:52Z",
+    "title": "Agentic workflows: hype or real value",
+    "description": "In this video we cover agentic workflows: hype or real value. Subscribe for more on ai agents automation.",
+    "channelTitle": "Controls Corner",
+    "tags": [
+     "ai",
+     "agents",
+     "automation",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "95893",
+    "likeCount": "5438",
+    "commentCount": "442"
+   },
+   "contentDetails": {
+    "duration": "PT19M20S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000016",
+   "snippet": {
+    "publishedAt": "2026-10-14T00:29:11Z",
+    "title": "How to make AI agents check each other",
+    "description": "In this video we cover how to make ai agents check each other. Subscribe for more on ai agents automation.",
+    "channelTitle": "Build With Bots",
+    "tags": [
+     "ai",
+     "agents",
+     "automation",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "6913",
+    "likeCount": "477",
+    "commentCount": "45"
+   },
+   "contentDetails": {
+    "duration": "PT1M15S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000017",
+   "snippet": {
+    "publishedAt": "2026-10-09T01:19:44Z",
+    "title": "Small modular reactors: when will the first ones run",
+    "description": "In this video we cover small modular reactors: when will the first ones run. Subscribe for more on small modular reactor nuclear.",
+    "channelTitle": "Agent Lab",
+    "tags": [
+     "small",
+     "modular",
+     "reactor",
+     "nuclear",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "26015",
+    "likeCount": "1447",
+    "commentCount": "164"
+   },
+   "contentDetails": {
+    "duration": "PT21M30S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000018",
+   "snippet": {
+    "publishedAt": "2026-10-08T04:15:51Z",
+    "title": "Rolls-Royce SMR progress update explained",
+    "description": "In this video we cover rolls-royce smr progress update explained. Subscribe for more on small modular reactor nuclear.",
+    "channelTitle": "Lead Better Daily",
+    "tags": [
+     "small",
+     "modular",
+     "reactor",
+     "nuclear",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "5534",
+    "likeCount": "256",
+    "commentCount": "42"
+   },
+   "contentDetails": {
+    "duration": "PT24M46S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000019",
+   "snippet": {
+    "publishedAt": "2026-10-11T10:54:01Z",
+    "title": "Why nuclear megaprojects run late",
+    "description": "In this video we cover why nuclear megaprojects run late. Subscribe for more on small modular reactor nuclear.",
+    "channelTitle": "Lead Better Daily",
+    "tags": [
+     "small",
+     "modular",
+     "reactor",
+     "nuclear",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "59290",
+    "likeCount": "2982",
+    "commentCount": "206"
+   },
+   "contentDetails": {
+    "duration": "PT14M7S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000020",
+   "snippet": {
+    "publishedAt": "2026-10-17T02:08:27Z",
+    "title": "SMR costs compared with wind and solar",
+    "description": "In this video we cover smr costs compared with wind and solar. Subscribe for more on small modular reactor nuclear.",
+    "channelTitle": "Controls Corner",
+    "tags": [
+     "small",
+     "modular",
+     "reactor",
+     "nuclear",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "36033",
+    "likeCount": "375",
+    "commentCount": "212"
+   },
+   "contentDetails": {
+    "duration": "PT7M4S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000021",
+   "snippet": {
+    "publishedAt": "2026-10-08T16:56:29Z",
+    "title": "Nuclear construction schedules: what goes wrong",
+    "description": "In this video we cover nuclear construction schedules: what goes wrong. Subscribe for more on small modular reactor nuclear.",
+    "channelTitle": "Project Pulse",
+    "tags": [
+     "small",
+     "modular",
+     "reactor",
+     "nuclear",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "4604",
+    "likeCount": "105",
+    "commentCount": "8"
+   },
+   "contentDetails": {
+    "duration": "PT18M30S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000022",
+   "snippet": {
+    "publishedAt": "2026-10-17T03:38:34Z",
+    "title": "India opens nuclear sector to private firms",
+    "description": "In this video we cover india opens nuclear sector to private firms. Subscribe for more on small modular reactor nuclear.",
+    "channelTitle": "Grid Talk",
+    "tags": [
+     "small",
+     "modular",
+     "reactor",
+     "nuclear",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "24302",
+    "likeCount": "380",
+    "commentCount": "134"
+   },
+   "contentDetails": {
+    "duration": "PT13M26S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000023",
+   "snippet": {
+    "publishedAt": "2026-10-14T07:05:25Z",
+    "title": "Data centres want nuclear power now",
+    "description": "In this video we cover data centres want nuclear power now. Subscribe for more on small modular reactor nuclear.",
+    "channelTitle": "Bangkok Bites Life",
+    "tags": [
+     "small",
+     "modular",
+     "reactor",
+     "nuclear",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "128550",
+    "likeCount": "8876",
+    "commentCount": "193"
+   },
+   "contentDetails": {
+    "duration": "PT23M21S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000024",
+   "snippet": {
+    "publishedAt": "2026-10-10T01:01:07Z",
+    "title": "Inside a nuclear plant life extension",
+    "description": "In this video we cover inside a nuclear plant life extension. Subscribe for more on small modular reactor nuclear.",
+    "channelTitle": "Agent Lab",
+    "tags": [
+     "small",
+     "modular",
+     "reactor",
+     "nuclear",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "9155",
+    "likeCount": "386",
+    "commentCount": "16"
+   },
+   "contentDetails": {
+    "duration": "PT8M29S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000025",
+   "snippet": {
+    "publishedAt": "2026-10-17T01:33:33Z",
+    "title": "Bangkok expat mistakes in your first month",
+    "description": "In this video we cover bangkok expat mistakes in your first month. Subscribe for more on bangkok expat life.",
+    "channelTitle": "Controls Corner",
+    "tags": [
+     "bangkok",
+     "expat",
+     "life",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "146549",
+    "likeCount": "9039",
+    "commentCount": "697"
+   },
+   "contentDetails": {
+    "duration": "PT20M34S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000026",
+   "snippet": {
+    "publishedAt": "2026-10-09T14:10:32Z",
+    "title": "Cost of living in Bangkok 2026 honest numbers",
+    "description": "In this video we cover cost of living in bangkok 2026 honest numbers. Subscribe for more on bangkok expat life.",
+    "channelTitle": "Bangkok Bites Life",
+    "tags": [
+     "bangkok",
+     "expat",
+     "life",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "68376",
+    "likeCount": "2676",
+    "commentCount": "159"
+   },
+   "contentDetails": {
+    "duration": "PT1M10S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000027",
+   "snippet": {
+    "publishedAt": "2026-10-15T10:02:03Z",
+    "title": "Expat visa options in Thailand explained",
+    "description": "In this video we cover expat visa options in thailand explained. Subscribe for more on bangkok expat life.",
+    "channelTitle": "Lead Better Daily",
+    "tags": [
+     "bangkok",
+     "expat",
+     "life",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "86030",
+    "likeCount": "3043",
+    "commentCount": "661"
+   },
+   "contentDetails": {
+    "duration": "PT21M45S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000028",
+   "snippet": {
+    "publishedAt": "2026-10-14T01:04:42Z",
+    "title": "Funny things only Bangkok expats understand",
+    "description": "In this video we cover funny things only bangkok expats understand. Subscribe for more on bangkok expat life.",
+    "channelTitle": "Controls Corner",
+    "tags": [
+     "bangkok",
+     "expat",
+     "life",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "11113",
+    "likeCount": "150",
+    "commentCount": "67"
+   },
+   "contentDetails": {
+    "duration": "PT23M20S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000029",
+   "snippet": {
+    "publishedAt": "2026-10-19T12:30:26Z",
+    "title": "Moving to Bangkok with kids: real talk",
+    "description": "In this video we cover moving to bangkok with kids: real talk. Subscribe for more on bangkok expat life.",
+    "channelTitle": "Lead Better Daily",
+    "tags": [
+     "bangkok",
+     "expat",
+     "life",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "39246",
+    "likeCount": "2400",
+    "commentCount": "75"
+   },
+   "contentDetails": {
+    "duration": "PT2M54S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000030",
+   "snippet": {
+    "publishedAt": "2026-10-17T21:08:15Z",
+    "title": "Thai phrases every expat needs",
+    "description": "In this video we cover thai phrases every expat needs. Subscribe for more on bangkok expat life.",
+    "channelTitle": "Project Pulse",
+    "tags": [
+     "bangkok",
+     "expat",
+     "life",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "51666",
+    "likeCount": "1245",
+    "commentCount": "85"
+   },
+   "contentDetails": {
+    "duration": "PT7M37S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000031",
+   "snippet": {
+    "publishedAt": "2026-10-12T16:04:37Z",
+    "title": "Bangkok condo hunting tips",
+    "description": "In this video we cover bangkok condo hunting tips. Subscribe for more on bangkok expat life.",
+    "channelTitle": "Atom Weekly",
+    "tags": [
+     "bangkok",
+     "expat",
+     "life",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "42549",
+    "likeCount": "1915",
+    "commentCount": "194"
+   },
+   "contentDetails": {
+    "duration": "PT6M42S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000032",
+   "snippet": {
+    "publishedAt": "2026-10-11T02:50:43Z",
+    "title": "Working remotely from Bangkok cafes",
+    "description": "In this video we cover working remotely from bangkok cafes. Subscribe for more on bangkok expat life.",
+    "channelTitle": "Grid Talk",
+    "tags": [
+     "bangkok",
+     "expat",
+     "life",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "10254",
+    "likeCount": "515",
+    "commentCount": "30"
+   },
+   "contentDetails": {
+    "duration": "PT24M59S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000033",
+   "snippet": {
+    "publishedAt": "2026-10-19T07:48:06Z",
+    "title": "Why big decisions take too long",
+    "description": "In this video we cover why big decisions take too long. Subscribe for more on decision making leadership.",
+    "channelTitle": "Build With Bots",
+    "tags": [
+     "decision",
+     "making",
+     "leadership",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "11264",
+    "likeCount": "743",
+    "commentCount": "80"
+   },
+   "contentDetails": {
+    "duration": "PT11M18S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000034",
+   "snippet": {
+    "publishedAt": "2026-10-18T05:43:46Z",
+    "title": "Decision latency is killing your project",
+    "description": "In this video we cover decision latency is killing your project. Subscribe for more on decision making leadership.",
+    "channelTitle": "Lead Better Daily",
+    "tags": [
+     "decision",
+     "making",
+     "leadership",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "331263",
+    "likeCount": "15470",
+    "commentCount": "2619"
+   },
+   "contentDetails": {
+    "duration": "PT0M42S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000035",
+   "snippet": {
+    "publishedAt": "2026-10-09T19:57:58Z",
+    "title": "Leaders who decide fast and stay right",
+    "description": "In this video we cover leaders who decide fast and stay right. Subscribe for more on decision making leadership.",
+    "channelTitle": "Planner Pete",
+    "tags": [
+     "decision",
+     "making",
+     "leadership",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "7120",
+    "likeCount": "472",
+    "commentCount": "12"
+   },
+   "contentDetails": {
+    "duration": "PT3M47S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000036",
+   "snippet": {
+    "publishedAt": "2026-10-13T04:42:48Z",
+    "title": "The cost of waiting for perfect data",
+    "description": "In this video we cover the cost of waiting for perfect data. Subscribe for more on decision making leadership.",
+    "channelTitle": "Atom Weekly",
+    "tags": [
+     "decision",
+     "making",
+     "leadership",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "7444",
+    "likeCount": "394",
+    "commentCount": "16"
+   },
+   "contentDetails": {
+    "duration": "PT16M31S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000037",
+   "snippet": {
+    "publishedAt": "2026-10-17T01:09:24Z",
+    "title": "How executives should read a schedule",
+    "description": "In this video we cover how executives should read a schedule. Subscribe for more on decision making leadership.",
+    "channelTitle": "Agent Lab",
+    "tags": [
+     "decision",
+     "making",
+     "leadership",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "155579",
+    "likeCount": "1967",
+    "commentCount": "498"
+   },
+   "contentDetails": {
+    "duration": "PT20M16S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000038",
+   "snippet": {
+    "publishedAt": "2026-10-18T04:33:21Z",
+    "title": "Psychological safety in project teams",
+    "description": "In this video we cover psychological safety in project teams. Subscribe for more on decision making leadership.",
+    "channelTitle": "Agent Lab",
+    "tags": [
+     "decision",
+     "making",
+     "leadership",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "17314",
+    "likeCount": "755",
+    "commentCount": "27"
+   },
+   "contentDetails": {
+    "duration": "PT17M2S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000039",
+   "snippet": {
+    "publishedAt": "2026-10-09T14:36:50Z",
+    "title": "Running meetings that end in decisions",
+    "description": "In this video we cover running meetings that end in decisions. Subscribe for more on decision making leadership.",
+    "channelTitle": "Controls Corner",
+    "tags": [
+     "decision",
+     "making",
+     "leadership",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "33389",
+    "likeCount": "589",
+    "commentCount": "100"
+   },
+   "contentDetails": {
+    "duration": "PT11M13S"
+   }
+  },
+  {
+   "kind": "youtube#video",
+   "id": "fx000000040",
+   "snippet": {
+    "publishedAt": "2026-10-11T13:17:15Z",
+    "title": "Bad news early: a leadership habit",
+    "description": "In this video we cover bad news early: a leadership habit. Subscribe for more on decision making leadership.",
+    "channelTitle": "Project Pulse",
+    "tags": [
+     "decision",
+     "making",
+     "leadership",
+     "2026"
+    ]
+   },
+   "statistics": {
+    "viewCount": "47859",
+    "likeCount": "2086",
+    "commentCount": "339"
+   },
+   "contentDetails": {
+    "duration": "PT23M9S"
+   }
+  }
+ ]
+}

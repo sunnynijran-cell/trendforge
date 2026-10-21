@@ -1,0 +1,5 @@
+.env
+*.db
+exports/
+__pycache__/
+.pytest_cache/

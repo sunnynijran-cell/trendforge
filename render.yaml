@@ -1,0 +1,24 @@
+# Render Blueprint. New > Blueprint > point at the repo. Fill secrets in the dashboard.
+services:
+  - type: web
+    name: trendforge
+    runtime: docker
+    plan: starter
+    healthCheckPath: /api/health
+    envVars:
+      - key: ADMIN_TOKEN
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false          # Supabase Postgres connection string (required)
+      - key: REQUIRE_POSTGRES
+        value: "1"           # refuse to start on throwaway SQLite: the cost ledger must persist
+      - key: YOUTUBE_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: MONTHLY_LLM_BUDGET_USD
+        value: "50"
+      - key: PER_RUN_LLM_BUDGET_USD
+        value: "2"
+      - key: EXPORTS_DIR
+        value: /app/exports   # not persistent on Render; use the webhook target for anything you keep

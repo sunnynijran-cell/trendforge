@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TrendForge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1B2A4A;--navy-2:#24365e;--gold:#C9A84C;--gold-soft:#f4ecd6;
+  --bg:#f5f6f8;--card:#fff;--ink:#1d2433;--muted:#5d6678;--line:#e1e4ea;
+  --ok:#1f7a4d;--ok-bg:#e3f3ea;--warn:#9a6400;--warn-bg:#fdf1dc;--bad:#a8322d;--bad-bg:#fbe5e3;
+  --radius:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1522;--card:#172033;--ink:#e7eaf0;--muted:#9aa4b8;--line:#2a3550;--gold-soft:#3a3320;
+  --ok-bg:#163527;--warn-bg:#3a2d12;--bad-bg:#3d1c1a;--ok:#5fd09a;--warn:#f0b44c;--bad:#f0837c;}}
+:root[data-theme="dark"]{--bg:#0f1522;--card:#172033;--ink:#e7eaf0;--muted:#9aa4b8;--line:#2a3550;--gold-soft:#3a3320;
+  --ok-bg:#163527;--warn-bg:#3a2d12;--bad-bg:#3d1c1a;--ok:#5fd09a;--warn:#f0b44c;--bad:#f0837c;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Open Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:Montserrat,system-ui,sans-serif;margin:0}
+header{background:var(--navy);color:#fff;padding:14px 16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+header h1{font-size:20px;letter-spacing:.5px}header h1 span{color:var(--gold)}
+header select{margin-left:auto}
+nav{display:flex;gap:4px;padding:0 16px;background:var(--navy-2);overflow-x:auto}
+nav button{background:none;border:0;color:#cfd6e4;padding:12px 14px;font:600 14px Montserrat,sans-serif;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+nav button[aria-selected="true"]{color:#fff;border-color:var(--gold)}
+main{max-width:1200px;margin:0 auto;padding:20px 16px 60px}
+section[hidden]{display:none}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:16px}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.muted{color:var(--muted)}.small{font-size:13px}
+button.btn{background:var(--navy);color:#fff;border:0;border-radius:8px;padding:9px 16px;font:600 14px Montserrat,sans-serif;cursor:pointer}
+button.btn.gold{background:var(--gold);color:var(--navy)}
+button.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+button.btn.danger{background:var(--bad)}
+button.btn:disabled{opacity:.45;cursor:not-allowed}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 10px;max-width:100%}
+textarea{width:100%;min-height:140px}
+label{display:block;font-weight:600;font-size:13px;margin:10px 0 4px}
+.pipeline{display:flex;gap:8px;align-items:stretch;overflow-x:auto;padding:4px 0}
+.stage{flex:1 0 130px;border:1px solid var(--line);border-radius:var(--radius);padding:12px;background:var(--card);position:relative}
+.stage h3{font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+.stage .n{font:700 26px Montserrat,sans-serif}
+.stage .m{font-size:12px;color:var(--muted)}
+.stage.active{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold-soft)}
+.stage.done .n{color:var(--ok)}.stage.fail{border-color:var(--bad)}
+.stage.gate{background:var(--gold-soft)}
+.arrow{align-self:center;color:var(--muted)}
+.meter{height:8px;background:var(--line);border-radius:6px;overflow:hidden;margin:6px 0}
+.meter>div{height:100%;background:var(--navy)}.meter.hot>div{background:var(--bad)}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:12px;font-weight:600;background:var(--line)}
+.b-pending_review,.b-awaiting_approval{background:var(--gold-soft);color:var(--warn)}
+.b-approved,.b-done,.b-published{background:var(--ok-bg);color:var(--ok)}
+.b-blocked,.b-failed,.b-rejected,.b-error{background:var(--bad-bg);color:var(--bad)}
+.b-running,.b-queued,.b-warn{background:var(--warn-bg);color:var(--warn)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 12px Montserrat,sans-serif;text-transform:uppercase;color:var(--muted)}
+.scroll{overflow-x:auto}
+.bar{height:6px;background:var(--gold);border-radius:4px}
+.item h3{font-size:16px}.item pre{white-space:pre-wrap;font:inherit;margin:8px 0}
+.issues{color:var(--bad);font-size:13px}
+.log li{padding:6px 0;border-bottom:1px solid var(--line);list-style:none}
+.log{padding:0;margin:0}.log .agent{font:600 12px Montserrat,sans-serif;text-transform:uppercase;width:90px;display:inline-block}
+#toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 16px;border-radius:8px;opacity:0;transition:.2s;pointer-events:none;max-width:90vw}
+#toast.show{opacity:1}#toast.err{background:var(--bad)}
+.chips label{display:inline-flex;gap:6px;align-items:center;font-weight:400;margin:4px 12px 4px 0}
+.empty{padding:24px;text-align:center;color:var(--muted)}
+header .badge{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25)}
+@media (max-width:640px){.pipeline{display:grid;grid-template-columns:1fr 1fr;overflow:visible}.pipeline .arrow{display:none}.stage{flex:none}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Trend<span>Forge</span></h1>
+  <span class="small" id="modes"></span>
+  <select id="projectSel" aria-label="Project" data-testid="project-select"></select>
+</header>
+<nav role="tablist">
+  <button role="tab" data-tab="overview" aria-selected="true">Overview</button>
+  <button role="tab" data-tab="review">Review queue <span id="pendingCount" class="badge b-pending_review"></span></button>
+  <button role="tab" data-tab="trends">Trends</button>
+  <button role="tab" data-tab="log">Run log</button>
+  <button role="tab" data-tab="projects">Projects &amp; topics</button>
+</nav>
+<main>
+<!-- TOP-DOWN -->
+<section id="tab-overview">
+  <div class="card">
+    <div class="row" style="justify-content:space-between">
+      <div><h2 style="font-size:18px">Pipeline</h2><div class="muted small" id="quote">Pick a project.</div></div>
+      <button class="btn gold" id="runBtn" data-testid="run-btn" disabled>Run pipeline</button>
+    </div>
+    <div class="pipeline" id="pipeline" style="margin-top:14px"></div>
+    <div class="small" id="runStatus" style="margin-top:10px"></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3 style="font-size:15px">YouTube quota today</h3><div id="ytMeter"></div></div>
+    <div class="card"><h3 style="font-size:15px">Claude spend this month</h3><div id="llmMeter"></div></div>
+  </div>
+  <div class="card"><h3 style="font-size:15px;margin-bottom:8px">Recent runs</h3><div class="scroll"><table id="runsTbl"></table></div></div>
+</section>
+
+<section id="tab-review" hidden>
+  <div class="row" style="margin-bottom:12px">
+    <select id="itemFilter" data-testid="item-filter">
+      <option value="pending_review">Waiting for you</option><option value="blocked">Blocked by checks</option>
+      <option value="approved">Approved, not published</option><option value="published">Published</option>
+      <option value="rejected">Rejected</option><option value="publishing">Stuck publishing</option><option value="">All</option>
+    </select>
+    <span class="muted small">Nothing publishes until you approve it.</span>
+  </div>
+  <div id="items"></div>
+</section>
+
+<section id="tab-trends" hidden>
+  <div class="card"><div class="muted small" id="trendsHead"></div><div class="scroll"><table id="trendsTbl"></table></div></div>
+  <div class="card"><h3 style="font-size:15px;margin-bottom:8px">Briefs from these trends</h3><div id="briefs"></div></div>
+</section>
+
+<!-- BOTTOM-UP -->
+<section id="tab-log" hidden>
+  <div class="card"><div class="row" style="margin-bottom:8px"><label for="logRun" style="margin:0">Run</label><select id="logRun"></select></div>
+  <ul class="log" id="logList" data-testid="log-list"></ul></div>
+</section>
+
+<section id="tab-projects" hidden>
+  <div class="grid2">
+    <div class="card" id="projDetail"></div>
+    <form class="card" id="newProject" data-testid="new-project-form">
+      <h3 style="font-size:15px">New project</h3>
+      <label for="np-name">Name</label><input id="np-name" required maxlength="120" style="width:100%">
+      <label for="np-desc">What it is for</label><input id="np-desc" style="width:100%">
+      <label for="np-aud">Audience</label><input id="np-aud" style="width:100%">
+      <label for="np-rules">Brand rules</label><textarea id="np-rules" style="min-height:70px" placeholder="UK spelling. Short sentences. No hype."></textarea>
+      <label>Outputs to make</label><div class="chips" id="np-types"></div>
+      <label for="np-banned">Banned terms (comma separated)</label><input id="np-banned" style="width:100%">
+      <div style="margin-top:12px"><button class="btn" type="submit">Create project</button></div>
+    </form>
+  </div>
+</section>
+</main>
+<div id="toast" role="status"></div>
+<script>
+const S={projects:[],pid:null,meta:null,latestRun:null,poll:null,token:localStorage.getItem("tf_token")||""};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function toast(msg,err){const t=$("#toast");t.textContent=msg;t.className="show"+(err?" err":"");clearTimeout(t._h);t._h=setTimeout(()=>t.className="",3500)}
+async function api(path,opts={}){
+  const r=await fetch(path,{...opts,headers:{"Content-Type":"application/json","X-Admin-Token":S.token,...(opts.headers||{})}});
+  if(r.status===401){const t=prompt("Admin token");if(t){S.token=t;try{localStorage.setItem("tf_token",t)}catch(e){};return api(path,opts)}}
+  if(r.status===204)return null;
+  const j=await r.json().catch(()=>({}));
+  if(!r.ok){const d=j.detail;throw new Error(typeof d==="string"?d:JSON.stringify(d||j))}
+  return j;
+}
+// tabs
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("nav button").forEach(x=>x.setAttribute("aria-selected",x===b));
+  document.querySelectorAll("main>section").forEach(s=>s.hidden=s.id!=="tab-"+b.dataset.tab);
+  refreshTab(b.dataset.tab);
+});
+function currentTab(){return document.querySelector('nav button[aria-selected="true"]').dataset.tab}
+function refreshTab(t){({overview:loadOverview,review:loadItems,trends:loadTrends,log:loadLog,projects:renderProject})[t]?.()}
+
+async function loadProjects(selectId){
+  S.projects=await api("/api/projects");
+  const sel=$("#projectSel");
+  sel.innerHTML=S.projects.length?S.projects.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join(""):'<option value="">No projects yet</option>';
+  if(selectId)S.pid=selectId;
+  if(!S.projects.find(p=>p.id===S.pid))S.pid=S.projects[0]?.id??null;
+  if(S.pid)sel.value=S.pid;
+}
+$("#projectSel").onchange=e=>{S.pid=+e.target.value;S.latestRun=null;refreshTab(currentTab())};
+const project=()=>S.projects.find(p=>p.id===S.pid);
+
+// ---------- overview (top-down) ----------
+const STAGES=[["scout","Scout","videos pulled"],["analyst","Analyst","trends scored"],["designer","Designer","briefs"],["maker","Maker","items made"],["review","You approve","waiting"],["publisher","Publisher","published"]];
+async function loadOverview(){
+  const u=await api("/api/usage");
+  $("#modes").innerHTML=`<span class="badge">${esc(u.youtube_mode)}</span> <span class="badge">${esc(u.llm_mode)}</span>`;
+  const ytPct=Math.min(100,u.youtube_units_today/u.youtube_daily_quota*100);
+  $("#ytMeter").innerHTML=`<div class="meter ${ytPct>80?"hot":""}"><div style="width:${ytPct}%"></div></div>
+    <div class="small"><b data-testid="yt-used">${u.youtube_units_today.toLocaleString()}</b> of ${u.youtube_daily_quota.toLocaleString()} units. ${u.youtube_reserve} held in reserve. Resets ${new Date(u.youtube_resets_at).toLocaleString("en-GB")}.</div>`;
+  const lPct=Math.min(100,u.llm_spend_month_usd/u.llm_monthly_budget_usd*100);
+  $("#llmMeter").innerHTML=`<div class="meter ${lPct>80?"hot":""}"><div style="width:${lPct}%"></div></div>
+    <div class="small"><b>$${u.llm_spend_month_usd.toFixed(2)}</b> of $${u.llm_monthly_budget_usd.toFixed(2)}. Cap per run $${u.per_run_llm_budget_usd.toFixed(2)}. Models: ${esc(u.model_fast)} (routine), ${esc(u.model_smart)} (design and make).</div>`;
+  if(!S.pid){$("#quote").textContent="Create a project first.";$("#runBtn").disabled=true;$("#pipeline").innerHTML="";$("#runsTbl").innerHTML="";return}
+  const q=await api(`/api/projects/${S.pid}/quote`);
+  $("#quote").textContent=q.topics?`${q.topics} topic(s). This run costs about ${q.youtube_units} YouTube units (${q.youtube_units_left.toLocaleString()} left) and ${q.llm_calls} Claude calls, capped at $${q.llm_run_cap_usd.toFixed(2)}.`:"Add a topic in Projects & topics before you run.";
+  const runs=await api(`/api/runs?project_id=${S.pid}&limit=10`);
+  S.latestRun=runs[0]?await api(`/api/runs/${runs[0].id}`):null;
+  const busy=S.latestRun&&["queued","running"].includes(S.latestRun.status);
+  $("#runBtn").disabled=!q.fits||busy;
+  renderPipeline(S.latestRun);
+  $("#runsTbl").innerHTML=runs.length?`<tr><th>Run</th><th>Status</th><th>Started</th><th>Quota</th><th>Claude</th><th>Note</th></tr>`+runs.map(r=>`<tr><td>#${r.id}</td><td><span class="badge b-${r.status}">${r.status.replace("_"," ")}</span></td><td>${new Date(r.started_at).toLocaleString("en-GB")}</td><td>${r.quota_used}</td><td>$${r.llm_cost_usd.toFixed(3)}</td><td class="small">${esc(r.error)}</td></tr>`).join(""):'<tr><td class="empty">No runs yet.</td></tr>';
+  clearInterval(S.poll);if(busy)S.poll=setInterval(()=>{if(currentTab()==="overview")loadOverview()},1500);
+}
+function renderPipeline(r){
+  const order=STAGES.map(s=>s[0]);
+  const at=r?order.indexOf(r.stage==="done"?"publisher":r.stage):-1;
+  const items=r?r.items:[];
+  const n={scout:r?r.events.filter(e=>e.agent==="scout"&&/Stored/.test(e.message)).map(e=>+e.message.match(/Stored (\d+)/)[1])[0]??0:0,
+    analyst:r?r.trends.length:0,designer:r?r.briefs.length:0,maker:items.length,
+    review:items.filter(i=>i.status==="pending_review").length,publisher:items.filter(i=>i.status==="published").length};
+  $("#pipeline").innerHTML=STAGES.map(([k,label,unit],i)=>{
+    let cls="stage";if(k==="review")cls+=" gate";
+    if(r){if(r.status==="failed"&&i===at)cls+=" fail";else if(i<at||(r.status!=="running"&&r.status!=="queued"&&i<=at&&k!=="review"))cls+=" done";else if(i===at)cls+=" active"}
+    return (i?'<span class="arrow" aria-hidden="true">&rarr;</span>':"")+`<div class="${cls}" data-testid="stage-${k}"><h3>${label}</h3><div class="n">${n[k]}</div><div class="m">${unit}</div></div>`}).join("");
+  $("#runStatus").innerHTML=r?`Latest run #${r.id}: <span class="badge b-${r.status}" data-testid="run-status">${r.status.replace("_"," ")}</span> ${r.error?`<span class="issues">${esc(r.error)}</span>`:""}`:"No runs yet for this project.";
+  updatePending();
+}
+$("#runBtn").onclick=async()=>{
+  $("#runBtn").disabled=true;
+  try{const r=await api(`/api/projects/${S.pid}/runs`,{method:"POST"});toast(`Run #${r.id} started.`);loadOverview()}
+  catch(e){toast(e.message,true);$("#runBtn").disabled=false}
+};
+
+// ---------- review ----------
+$("#itemFilter").onchange=loadItems;
+async function updatePending(){
+  if(!S.pid){$("#pendingCount").textContent="";return}
+  const n=(await api(`/api/items?status=pending_review&project_id=${S.pid}`)).length;
+  $("#pendingCount").textContent=n||"";
+}
+async function loadItems(){
+  if(!S.pid){$("#items").innerHTML='<div class="empty">No project.</div>';return}
+  updatePending();
+  const st=$("#itemFilter").value;
+  const items=await api(`/api/items?project_id=${S.pid}${st?`&status=${st}`:""}`);
+  const targets=(S.meta||{}).publish_targets||["export"];
+  $("#items").innerHTML=items.length?items.map(i=>`
+   <div class="card item" data-testid="item-${i.id}" data-status="${i.status}">
+    <div class="row" style="justify-content:space-between"><h3>${esc(i.title)}</h3><span class="badge b-${i.status}">${i.status.replace("_"," ")}</span></div>
+    <div class="muted small">${esc(i.kind)} &middot; run #${i.run_id} &middot; ${i.checks.length??0}/${i.checks.limit??""} chars</div>
+    ${i.checks.issues?.length?`<div class="issues">${i.checks.issues.map(esc).join("<br>")}</div>`:""}
+    ${i.checks.editor_notes?.length?`<div class="small" style="color:var(--warn)" data-testid="editor-notes"><b>Editor notes (Haiku), your call:</b><br>${i.checks.editor_notes.map(esc).join("<br>")}</div>`:""}
+    ${i.status==="pending_review"?`<label for="t${i.id}">Title</label><input id="t${i.id}" value="${esc(i.title)}" style="width:100%"><label for="b${i.id}">Body (edit before approving if you like)</label><textarea id="b${i.id}">${esc(i.body)}</textarea>`:`<pre>${esc(i.body)}</pre>`}
+    ${i.review_note?`<div class="small muted">Note: ${esc(i.review_note)}</div>`:""}
+    ${i.publish_ref?`<div class="small muted">Published via ${esc(i.publish_target)}: ${esc(i.publish_ref)}</div>`:""}
+    <div class="row" style="margin-top:10px">
+     ${i.status==="pending_review"?`<button class="btn" data-act="approve" data-id="${i.id}">Approve</button>`:""}
+     ${["pending_review","blocked","approved"].includes(i.status)?`<button class="btn ghost" data-act="reject" data-id="${i.id}">Reject</button>`:""}
+     ${i.status==="approved"?`<select id="tg${i.id}">${targets.map(t=>`<option>${t}</option>`).join("")}</select><button class="btn gold" data-act="publish" data-id="${i.id}">Publish</button>`:""}
+     ${i.status==="published"?`<input id="pv${i.id}" type="number" min="0" placeholder="views" style="width:90px"><input id="pc${i.id}" type="number" min="0" placeholder="clicks" style="width:90px"><input id="pl${i.id}" type="number" min="0" placeholder="leads" style="width:90px"><button class="btn ghost" data-act="perf" data-id="${i.id}">Record results</button>${i.performance?.score!=null?`<span class="small">score ${i.performance.score.toFixed(1)}</span>`:""}`:""}
+    </div></div>`).join(""):'<div class="empty card">Nothing here.</div>';
+}
+$("#items").onclick=async e=>{
+  const b=e.target.closest("button[data-act]");if(!b)return;const id=b.dataset.id;b.disabled=true;
+  try{
+    if(b.dataset.act==="approve")await api(`/api/items/${id}/approve`,{method:"POST",body:JSON.stringify({title:$("#t"+id).value,body:$("#b"+id).value})});
+    if(b.dataset.act==="reject")await api(`/api/items/${id}/reject`,{method:"POST",body:JSON.stringify({note:prompt("Reason (optional)")||""})});
+    if(b.dataset.act==="publish")await api(`/api/items/${id}/publish`,{method:"POST",body:JSON.stringify({target:$("#tg"+id).value})});
+    if(b.dataset.act==="perf")await api(`/api/items/${id}/performance`,{method:"POST",body:JSON.stringify({views:+$("#pv"+id).value||0,clicks:+$("#pc"+id).value||0,leads:+$("#pl"+id).value||0})});
+    toast("Done.");loadItems();
+  }catch(err){toast(err.message,true);b.disabled=false}
+};
+
+// ---------- trends ----------
+async function loadTrends(){
+  if(!S.latestRun&&S.pid){const runs=await api(`/api/runs?project_id=${S.pid}&limit=1`);S.latestRun=runs[0]?await api(`/api/runs/${runs[0].id}`):null}
+  const r=S.latestRun;
+  if(!r||!r.trends.length){$("#trendsHead").textContent="No trends yet. Run the pipeline.";$("#trendsTbl").innerHTML="";$("#briefs").innerHTML="";return}
+  $("#trendsHead").textContent=`Run #${r.id}. Score = 70% views per hour, 20% engagement, 10% recency, ranked within the run.`;
+  const max=Math.max(...r.trends.map(t=>t.score));
+  $("#trendsTbl").innerHTML=`<tr><th>Score</th><th>Video</th><th>Theme</th><th>Views/hr</th><th>Engagement</th></tr>`+r.trends.map(t=>`<tr data-testid="trend-row"><td style="width:110px">${t.score.toFixed(2)}<div class="bar" style="width:${t.score/max*100}%"></div></td><td><a href="${esc(t.url)}" target="_blank" rel="noopener">${esc(t.title)}</a><div class="small muted">${esc(t.channel)} &middot; ${t.views.toLocaleString()} views</div></td><td><span class="badge">${esc(t.theme)}</span></td><td>${Math.round(t.views_per_hour).toLocaleString()}</td><td>${(t.engagement_rate*100).toFixed(1)}%</td></tr>`).join("");
+  $("#briefs").innerHTML=r.briefs.map(b=>`<div style="padding:8px 0;border-bottom:1px solid var(--line)"><b>${esc(b.title)}</b> <span class="badge">${esc(b.format)}</span><div class="small">${esc(b.angle)}</div><div class="small muted">${esc(b.rationale)}</div></div>`).join("")||'<div class="empty">No briefs.</div>';
+}
+
+// ---------- log (bottom-up) ----------
+$("#logRun").onchange=()=>loadLog(+$("#logRun").value);
+async function loadLog(runId){
+  if(!S.pid){$("#logList").innerHTML="";return}
+  const runs=await api(`/api/runs?project_id=${S.pid}&limit=20`);
+  $("#logRun").innerHTML=runs.map(r=>`<option value="${r.id}">#${r.id} ${r.status}</option>`).join("");
+  const id=runId||runs[0]?.id;if(!id){$("#logList").innerHTML='<li class="empty">No runs yet.</li>';return}
+  $("#logRun").value=id;
+  const r=await api(`/api/runs/${id}`);
+  $("#logList").innerHTML=r.events.map(e=>`<li><span class="small muted">${new Date(e.ts).toLocaleTimeString("en-GB")}</span> <span class="agent">${esc(e.agent)}</span> ${e.level!=="info"?`<span class="badge b-${e.level}">${e.level}</span> `:""}${esc(e.message)}</li>`).join("");
+}
+
+// ---------- projects ----------
+function renderProject(){
+  const p=project();const box=$("#projDetail");
+  if(!p){box.innerHTML='<div class="empty">No project selected. Create one.</div>';return}
+  box.innerHTML=`<h3 style="font-size:15px">${esc(p.name)}</h3><div class="small muted">${esc(p.description)}</div>
+   <div class="small" style="margin-top:6px"><b>Audience:</b> ${esc(p.audience)||"-"}<br><b>Outputs:</b> ${p.output_types.map(esc).join(", ")}<br><b>Banned:</b> ${p.banned_terms.map(esc).join(", ")||"-"}</div>
+   <label style="margin-top:14px">Search topics</label>
+   <table data-testid="topics">${p.topics.map(t=>`<tr><td>${esc(t.query)}</td><td class="small">${t.region}, ${t.max_results} results, ${t.lookback_days}d</td><td><button class="btn ghost" data-deltopic="${t.id}">Remove</button></td></tr>`).join("")||'<tr><td class="muted">None yet.</td></tr>'}</table>
+   <form id="topicForm" class="row" style="margin-top:10px"><input id="tq" placeholder="e.g. primavera p6" required minlength="2" style="flex:1 1 180px" data-testid="topic-input">
+   <input id="tr" value="GB" maxlength="2" style="width:56px" aria-label="Region"><input id="tm" type="number" value="25" min="1" max="50" style="width:70px" aria-label="Max results">
+   <input id="td" type="number" value="14" min="1" max="90" style="width:70px" aria-label="Lookback days"><button class="btn" type="submit">Add topic</button></form>
+   <div class="small muted" style="margin-top:6px">Each topic costs 100 YouTube units per run.</div>
+   <div style="margin-top:16px"><button class="btn danger" id="delProj">Delete project</button></div>`;
+  $("#topicForm").onsubmit=async e=>{e.preventDefault();try{await api(`/api/projects/${p.id}/topics`,{method:"POST",body:JSON.stringify({query:$("#tq").value,region:$("#tr").value.toUpperCase(),max_results:+$("#tm").value,lookback_days:+$("#td").value})});await loadProjects(p.id);renderProject();toast("Topic added.")}catch(err){toast(err.message,true)}};
+  box.querySelectorAll("[data-deltopic]").forEach(b=>b.onclick=async()=>{await api(`/api/topics/${b.dataset.deltopic}`,{method:"DELETE"});await loadProjects(p.id);renderProject()});
+  $("#delProj").onclick=async()=>{if(!confirm(`Delete ${p.name} and all its runs?`))return;await api(`/api/projects/${p.id}`,{method:"DELETE"});S.pid=null;await loadProjects();renderProject()};
+}
+$("#newProject").onsubmit=async e=>{
+  e.preventDefault();
+  const types=[...document.querySelectorAll("#np-types input:checked")].map(i=>i.value);
+  try{
+    const p=await api("/api/projects",{method:"POST",body:JSON.stringify({name:$("#np-name").value.trim(),description:$("#np-desc").value,audience:$("#np-aud").value,brand_rules:$("#np-rules").value,output_types:types.length?types:["linkedin_post"],banned_terms:$("#np-banned").value.split(",").map(s=>s.trim()).filter(Boolean)})});
+    e.target.reset();await loadProjects(p.id);renderProject();toast(`Created ${p.name}.`);
+  }catch(err){toast(err.message,true)}
+};
+
+(async function boot(){
+  try{
+    S.meta=await api("/api/meta");
+    $("#np-types").innerHTML=S.meta.output_types.map(t=>`<label><input type="checkbox" value="${t}" ${t==="linkedin_post"?"checked":""}>${t.replaceAll("_"," ")}</label>`).join("");
+    await loadProjects();await loadOverview();
+  }catch(e){toast(e.message,true)}
+})();
+</script>
+</body>
+</html>
