@@ -26,9 +26,10 @@ def test_full_run_reaches_approval_gate(db, project):
         trends = s.scalars(select(Trend).where(Trend.run_id == run.id).order_by(Trend.id)).all()
         briefs = s.scalars(select(Brief).where(Brief.run_id == run.id)).all()
         items = s.scalars(select(Item).where(Item.run_id == run.id)).all()
-        # 8 + 8 from the two themes, plus 3 cross-matches on 'project'; 2 of those
-        # are already in the leadership set, so dedupe leaves 17 unique videos.
-        assert videos == 17
+        # 8 + 8 from the two themes, plus 3 loose matches on 'project'. Two are
+        # duplicates (deduped); the third ('megaprojects') never mentions a search
+        # word, so the relevance filter drops it: 16 videos.
+        assert videos == 16
         assert len(trends) == settings.top_trends
         assert all(0 <= t.score <= 1 for t in trends)
         scores = [t.score for t in trends]

@@ -74,5 +74,5 @@ def run(ctx: Ctx) -> int:
                          source_trend_ids=srcs))
         made += 1
     ctx.db.flush()
-    ctx.log("designer", f"{made} brief(s) from {len(themes)} theme(s) with {ctx.cfg.model_smart}.")
+    ctx.log("designer", f"{made} brief(s) from {len(themes)} theme(s) with {getattr(ctx.llm, 'label', '') or ctx.cfg.model_smart}.")
     return made

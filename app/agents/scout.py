@@ -1,12 +1,26 @@
 """Scout: pulls video data for every active topic on the project."""
 from __future__ import annotations
 
+import re
 from datetime import datetime, timedelta, timezone
 
 from ..db import Video
 from ..youtube import estimate_units
 from ..ledger import youtube_headroom, QuotaExceeded
 from .base import Ctx
+
+
+STOP = {"the", "and", "for", "with", "how", "what", "your", "you", "from", "into", "best"}
+
+
+def is_relevant(query: str, v) -> bool:
+    """YouTube search pads results with loosely related videos. Keep a video only
+    if at least one meaningful search word appears in its title, tags or description."""
+    words = [w for w in re.findall(r"[a-z0-9]+", query.lower()) if len(w) > 1 and w not in STOP]
+    if not words:
+        return True
+    hay = " ".join([v.title, " ".join(v.tags), v.description]).lower()
+    return any(re.search(rf"\b{re.escape(w)}\b", hay) for w in words)
 
 
 def run(ctx: Ctx) -> int:
@@ -30,6 +44,11 @@ def run(ctx: Ctx) -> int:
         ctx.log("scout", f"'{t.query}' ({t.region}, last {t.lookback_days}d): {len(ids)} hits, {len(new)} new.")
 
     stats = ctx.yt.videos(ctx.db, list(seen), ctx.run.id) if seen else []
+    queries = {t.id: t.query for t in topics}
+    kept = [s for s in stats if is_relevant(queries.get(seen.get(s.yt_id), ""), s)]
+    if len(kept) < len(stats):
+        ctx.log("scout", f"Dropped {len(stats) - len(kept)} off-topic video(s) that never mention the search words.")
+    stats = kept
     for s in stats:
         ctx.db.add(Video(run_id=ctx.run.id, topic_id=seen.get(s.yt_id), yt_id=s.yt_id, title=s.title,
                          channel_title=s.channel_title, description=s.description, tags=s.tags,

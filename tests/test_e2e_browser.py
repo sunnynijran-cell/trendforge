@@ -93,7 +93,7 @@ def test_user_journey(server, page):
     pg.wait_for_selector("#quote >> text=201 YouTube units")
     pg.click("[data-testid=run-btn]")
     pg.wait_for_selector("[data-testid=run-status] >> text=awaiting approval", timeout=20000)
-    assert pg.inner_text("[data-testid=stage-scout] .n") == "17"
+    assert pg.inner_text("[data-testid=stage-scout] .n") == "16"
     assert pg.inner_text("[data-testid=stage-analyst] .n") == "10"
     assert pg.inner_text("[data-testid=stage-designer] .n") == "3"
     assert pg.inner_text("[data-testid=stage-review] .n") == "3"

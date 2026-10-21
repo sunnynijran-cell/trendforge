@@ -53,6 +53,8 @@ class LLM(Protocol):
 
 
 class ClaudeLLM:
+    label = ""   # empty: logs show the real model name
+
     def __init__(self, cfg: Settings = settings):
         import anthropic
         self.cfg = cfg
@@ -82,14 +84,20 @@ class FakeLLM:
     """Deterministic stand-in for tests and offline demos. Books a token cost
     so the budget logic is exercised exactly as it would be live."""
 
+    label = "offline fake model"
+
     def __init__(self, cfg: Settings = settings):
         self.cfg = cfg
         self.calls: list[str] = []
+        # Tests (OFFLINE=1) book a simulated cost so the budget logic is exercised.
+        # A live deploy that simply has no Claude key yet books $0, so the meter stays honest.
+        self.simulate_cost = cfg.offline_override == "1"
 
     def json(self, db, task, system, prompt, run_id):
         with llm_reservation(db, run_id, worst_case_usd(task, prompt, system, self.cfg), self.cfg):
             self.calls.append(task)
-            charge_llm(db, model_for(task, self.cfg), len(prompt) // 4, 400, task, run_id, self.cfg)
+            if self.simulate_cost:
+                charge_llm(db, model_for(task, self.cfg), len(prompt) // 4, 400, task, run_id, self.cfg)
         payload = json.loads(prompt.split("DATA:", 1)[1]) if "DATA:" in prompt else {}
         if task == "cluster":
             themes: dict[str, list[int]] = {}

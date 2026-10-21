@@ -140,7 +140,7 @@ def _get(db: Session, model, id_: int):
 
 
 # ---------- routes ----------
-@app.get("/")
+@app.api_route("/", methods=["GET", "HEAD"])
 def index():
     return FileResponse(STATIC / "index.html")
 

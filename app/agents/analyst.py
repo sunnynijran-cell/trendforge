@@ -90,7 +90,7 @@ def run(ctx: Ctx) -> int:
             for tid in th["trend_ids"]:
                 if isinstance(tid, int) and tid in by_id:
                     by_id[tid].theme = str(th.get("name", "unclustered"))[:120]
-        ctx.log("analyst", f"Grouped into {len({t.theme for t in trends})} theme(s) with {ctx.cfg.model_fast}.")
+        ctx.log("analyst", f"Grouped into {len({t.theme for t in trends})} theme(s) with {getattr(ctx.llm, 'label', '') or ctx.cfg.model_fast}.")
     except Exception as e:  # themes are helpful, not essential
         ctx.log("analyst", f"Theme grouping skipped: {e}", "warn")
     ctx.db.flush()

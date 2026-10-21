@@ -95,3 +95,22 @@ def test_model_routing_never_uses_opus():
     assert model_for("design") == settings.model_smart
     assert model_for("make") == settings.model_smart
     assert "opus" not in settings.model_fast + settings.model_smart
+
+
+def test_relevance_filter_drops_off_topic():
+    from types import SimpleNamespace as NS
+    from app.agents.scout import is_relevant
+    p6 = NS(title="Cost loading in Primavera P6", tags=[], description="")
+    board = NS(title="HDHMR board for interior work", tags=["interior"], description="Tips")
+    in_desc = NS(title="Planning tutorial", tags=[], description="Uses P6 throughout")
+    assert is_relevant("primavera p6", p6) and is_relevant("primavera p6", in_desc)
+    assert not is_relevant("primavera p6", board)
+    assert is_relevant("", board)
+
+
+def test_fake_model_books_no_spend_on_a_keyless_deploy(db):
+    from dataclasses import replace
+    from app.llm import FakeLLM
+    from app.ledger import llm_spend_month
+    FakeLLM(replace(settings, offline_override="")).json(db, "check", "s", "p", None)
+    assert llm_spend_month(db) == 0
