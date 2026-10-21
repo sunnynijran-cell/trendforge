@@ -79,7 +79,8 @@ def run_voices(ctx: Ctx) -> int:
         res = ctx.llm.json(ctx.db, "vet",
                            "You assess YouTube channels for a learner. Mark political=true only if the channel is "
                            "mainly about party politics, elections or culture-war commentary. Mark on_topic=false if "
-                           "it does not genuinely teach the interest.",
+                           "it does not genuinely teach the interest, if it is mainly not in English, or if it is "
+                           "clickbait (manipulation tricks, get-rich claims) rather than real teaching.",
                            'Return {"channels":[{"channel_id":str,"on_topic":bool,"political":bool,"focus":str}]}.'
                            "\nDATA:" + json.dumps(data), ctx.run.id)
         for r in (res.get("channels") if isinstance(res, dict) else None) or []:
